@@ -1,0 +1,12 @@
+{
+  "name"          : "mixin",
+  "description"   : "Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!",
+  "homepage"      : "https://github.com/kmalakoff/mixin",
+  "keywords"      : ["util", "functional", "server", "client", "browser"],
+  "author"        : "Kevin Malakoff <xmann.intl@gmail.com>",
+  "contributors"  : [],
+  "dependencies"  : [],
+  "repository"    : {"type": "git", "url": "git://github.com/kmalakoff/mixin.git"},
+  "main"          : "mixin.js",
+  "version"       : "0.1.0"
+}

@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Mixin.js Test Suite - All Tests</title>
+  <link rel="stylesheet" href="vendor/qunit.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="vendor/jquery.js"></script>
+  <script type="text/javascript" src="vendor/qunit.js"></script>
+  <style type="text/css">
+     iframe, body {height: 100%; padding:0; margin: 0;}
+     iframe {float: left;}
+     div.test-block {display:block; width: 100%; height: 100%; float: left;}
+  </style>
+</head>
+<body>
+  <div class="test-block">
+    <h1 class="qunit-header">Mixin.js - Mixin Tests</h1>
+    <iframe src="mixin_core/mixin_core_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_auto_memory/mixin_auto_memory_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_backbone_events/mixin_backbone_events_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_backbone_local_collection/mixin_backbone_local_collection_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_flags/mixin_flags_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_ref_count/mixin_ref_count_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_subscriptions/mixin_subscriptions_tests.html" scrolling="auto" frameborder="0"></iframe>
+    <iframe src="mixin_timeouts/mixin_timeouts_tests.html" scrolling="auto" frameborder="0"></iframe>
+  </div>
+
+  <div class="test-block">
+    <h1 class="qunit-header">Mixin.js - Integration Tests</h1>
+    <iframe src="integration_auto_unmix/integration_auto_unmix_tests.html" scrolling="auto" frameborder="0"></iframe>
+  </div>
+</body>
+</html>

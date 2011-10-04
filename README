@@ -1,0 +1,62 @@
+        _        _           _
+  /\/\ (_)__  __(_)_ __     (_)___
+ /    \| |\ \/ /| | '_ \    | / __|
+/ /\/\ \ | >  < | | | | |_  | \__ \
+\/    \/_|/_/\_\|_|_| |_(_)_/ |___/
+                          |__/
+
+Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!
+
+You can get the library with standard mixins here:
+  - Development version: https://github.com/kmalakoff/mixin/raw/master/mixin.js
+  - Production version: https://github.com/kmalakoff/mixin/raw/master/mixin.min.js
+
+You can get the minimal library (no standard mixins included) here:
+  - Development version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.js
+  - Production version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.min.js
+
+****************
+The library is composed of the following mixins:
+
+  1) AutoMemory - provides ways to clean up your objects when they are destroyed (for example, breaking DOM reference cycles, calling cleanup methods, etc).
+
+  2) Backbone.Events - provides a way to mixin Backbone.Events to any instance plus it provides a way to mark the native classes as having the Backbone.Events mixin.
+      -> With the Mixin.UNMIX_ON_BACKBONE_DESTROY setting enabled, it will automatically cleanup all instances with Backbone.Events when they receive a instance.trigger('destroy').
+
+  3) Backbone.LocalCollection - it just assigns the cid to the id and throw exceptions if you try to use server-related functionality.
+
+  4) Flags - provides ways to manage flags and to get a callback when they change.
+
+  5) RefCount - provides ways some basic reference counting and to get a callback when your instance is released.
+
+  6) Subscriptions - provides a way to publish subscriptions (addSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
+      -> this give a more advanced example of what is possible.
+
+  7) Timeouts - provides named timeout management and automatically cleaning them up when an instance is destroyed.
+
+***************
+Please look at the provided tests for sample code (Documentation is light at the moment!):
+  - https://github.com/kmalakoff/mixin/blob/master/test
+
+****************
+The vision: I can imagine there being a community of mixin-oriented Javascript nano-libraries that can create the building blocks for more inter-operable and reusable micro-frameworks and libraries. Play with the mixins I've packaged, make some of your own (maybe refactoring some of your existing code - no matter how big or small), and share your stories!
+
+I'll be publishing some of my mixin stories and cool examples on my blog: http://braincode.tumblr.com/
+
+****************
+Current version: 0.1.0
+Target version: 1.0.0
+
+I'm looking for volunteers to help make get Mixin to the 1.0.0 release and beyond! If you can spare some time and talent please do!
+
+If you are more designer-inclined, I'm looking for some help with branding and setting up some example pages.
+
+If you are more technical, there's documentation and tests (including for CommonJS), setting up testing for on multiple browsers (I've run the tests on the latest Chrome, Firefox, Safari, Internet Explorer, and Opera but I need an automated process), memory and performance analysis and optimizations, making the build and packaging extensible (using a yaml file?), and of course writing samples and more mixins!
+
+Or let me know if you have any other ideas for improvements and contributions!
+
+
+Enjoy!
+
+Kevin
+xmann-intl@gmail.com

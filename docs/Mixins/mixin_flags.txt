@@ -1,0 +1,7 @@
+Mixin.Flags Docs
+********************
+
+This mixin provides ways to manage flags and to get a callback when they change.
+
+
+TODO! for now, please study the tests in: test/mixin_flags/mixin_flags_tests.coffee

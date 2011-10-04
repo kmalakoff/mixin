@@ -1,0 +1,44 @@
+gzip_assets: off
+compress_assets: on
+
+javascripts:
+  'mixin_core.min':
+    - build/mixin_core.js
+    - build/mixin_core_statistics.js
+
+  'mixin.min':
+    - build/mixin_core.js
+    - build/mixin_core_statistics.js
+    - build/mixin_backbone_events.js
+    - build/mixin_ref_count.js
+    - build/mixin_flags.js
+    - build/mixin_auto_memory.js
+    - build/mixin_backbone_local_collection.js
+    - build/mixin_timeouts.js
+    - build/mixin_subscriptions.js
+
+  'build/mixin_core.min':
+    - build/mixin_core.js
+    - build/mixin_core_statistics.js
+
+  'build/mixin_auto_memory.min':
+    - build/mixin_auto_memory.js
+
+  'build/mixin_backbone_events.min':
+    - build/mixin_backbone_events.js
+
+  'build/mixin_backbone_local_collection.min':
+    - build/mixin_backbone_local_collection.js
+
+  'build/mixin_flags.min':
+    - build/mixin_flags.js
+
+  'build/mixin_ref_count.min':
+    - build/mixin_ref_count.js
+
+  'build/mixin_subscriptions.min':
+    - build/mixin_subscriptions.js
+
+  'build/mixin_timeouts.min':
+    - build/mixin_timeouts.js
+

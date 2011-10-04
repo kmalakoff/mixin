@@ -1,0 +1,7 @@
+Mixin.Backbone.LocalCollection Docs
+********************
+
+This mixin provides a way to use a Backbone.Collection locally (for example if you want to use Backbone.Models but not persist them to a server). Basically, it just assigns the cid to the id and throw exceptions if you try to use server-related functionality.
+
+
+TODO! for now, please study the tests in: test/mixin_backbone_local_collection/mixin_backbone_local_collection_tests.coffee

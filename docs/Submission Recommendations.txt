@@ -1,0 +1,20 @@
+Hello and Welcome!
+
+If you are interested in submitting new mixins for the core library, I recommend the following:
+
+1) Make sure they have as few dependencies as absolutely necessary. When you have dependencies, please make them as clear as possible. Personally, I've chosen to:
+  a) Put a line in the header like:
+    - 'Dependencies: Mixin.Core, Underscore.js, Underscore-Awesomer.js'
+  b) Adding checks in the file like:
+    - 'throw new Error("Mixin.AutoMemory: Dependency alert! Underscore-Awesomer.js must be included before this file") if not _.AWESOMENESS'
+  c) Add checks for dependencies in the actual test that triggers a failed test if they are missing like:
+    test("TEST DEPENDENCY MISSING", -> _.VERSION; Backbone.Backbone)
+  d) Add a dependencies folder under the mixin test so it is self documenting.
+
+2) Add automated tests into the test directory. There are two types of tests:
+  a) mixin tests - unit tests of your mixin in isolation. Use the mixin_core.js file which doesn't include all of the pre-packaged mixins.
+  b) integration tests - demonstrating common and expected usage with other libraries or mixins.
+
+3) Add a header to you source file with your licensing.
+
+4) If there are expensive checks to help other developers (or just yourself!) use the convention of using the Mixin.DEBUG to enable/disable them.
