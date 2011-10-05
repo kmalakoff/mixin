@@ -21,52 +21,60 @@ Mixin.AutoMemory || (Mixin.AutoMemory = {});
 Mixin.AutoMemory.root = this;
 Mixin.AutoMemory.WRAPPER = Mixin.AutoMemory.root['$'] ? $ : '$';
 Mixin.AutoMemory.Property = (function() {
-  function Property(owner, key, fn_ref, args) {
-    var _i, _len, _ref;
+  function Property(owner) {
     this.owner = owner;
-    this.key = key;
-    this.fn_ref = fn_ref;
-    this.args = args;
+  }
+  Property.prototype.setArgs = function() {
+    var key_or_array, _i, _len, _ref, _results;
+    if (!arguments.length) {
+      throw new Error("Mixin.AutoMemory: missing key");
+    }
+    this.args = Array.prototype.slice.call(arguments);
     if (!Mixin.DEBUG) {
       return this;
     }
-    if (!this.key) {
-      throw new Error("Mixin.AutoMemory: missing key");
-    }
-    if (_.isArray(this.key)) {
-      _ref = this.key;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        if (!_.keypathExists(this.owner, key)) {
-          throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.className(this.owner)) + "'");
-        }
-      }
-    } else {
-      if (!_.keypathExists(this.owner, this.key)) {
-        throw new Error("Mixin.AutoMemory: property '" + this.key + "' doesn't exist on '" + (_.className(this.owner)) + "'");
-      }
-    }
-    if (this.fn_ref && !(_.isFunction(this.fn_ref) || _.isString(this.fn_ref))) {
-      throw new Error("Mixin.AutoMemory: unexpected function reference for property '" + this.key + "' on '" + (_.className(this.owner)) + "'");
-    }
-  }
-  Property.prototype.destroy = function() {
-    var key, _i, _len, _ref, _results;
-    if (_.isArray(this.key)) {
-      _ref = this.key;
+    if (_.isArray(this.args[0])) {
+      _ref = this.args;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        key = _ref[_i];
-        _results.push(this._destroyKey(key));
+        key_or_array = _ref[_i];
+        _results.push(this._validateEntry(key_or_array));
       }
       return _results;
     } else {
-      return this._destroyKey(this.key);
+      return this._validateEntry(this.args);
     }
   };
-  Property.prototype._destroyKey = function(key) {
-    var value;
-    if (!this.fn_ref) {
+  Property.prototype.destroy = function() {
+    var key_or_array, _i, _len, _ref, _results;
+    if (_.isArray(this.args[0])) {
+      _ref = this.args;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        key_or_array = _ref[_i];
+        _results.push(this._destroyEntry(key_or_array));
+      }
+      return _results;
+    } else {
+      return this._destroyEntry(this.args);
+    }
+  };
+  Property.prototype._validateEntry = function(entry) {
+    var fn_ref, key;
+    key = entry[0];
+    fn_ref = entry.length > 1 ? entry[1] : void 0;
+    if (!_.keypathExists(this.owner, key)) {
+      throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.classOf(this.owner)) + "'");
+    }
+    if (fn_ref && !(_.isFunction(fn_ref) || _.isString(fn_ref))) {
+      throw new Error("Mixin.AutoMemory: unexpected function reference for property '" + key + "' on '" + (_.classOf(this.owner)) + "'");
+    }
+  };
+  Property.prototype._destroyEntry = function(entry) {
+    var fn_ref, key, property, value, _i, _len, _ref;
+    key = entry[0];
+    fn_ref = entry.length > 1 ? entry[1] : void 0;
+    if (!fn_ref) {
       _.keypath(this.owner, key, null);
       return;
     }
@@ -74,14 +82,17 @@ Mixin.AutoMemory.Property = (function() {
     if (!value) {
       return;
     }
-    if (_.isFunction(this.fn_ref)) {
-      this.fn_ref.apply(this.owner, [value].concat(this.args ? this.args.slice() : []));
+    if (_.isFunction(fn_ref)) {
+      fn_ref.apply(this.owner, [value].concat(entry.length > 2 ? entry.slice(2) : []));
     } else {
-      if (Mixin.DEBUG && !_.isFunction(value[this.fn_ref])) {
-        throw new Error("Mixin.AutoMemory: function '" + this.fn_ref + "' missing for property '" + key + "' on '" + (_.className(this.owner)) + "'");
-      }
-      if (_.isFunction(value[this.fn_ref])) {
-        value[this.fn_ref].apply(value, this.args);
+      if (_.isFunction(value[fn_ref])) {
+        value[fn_ref].apply(value, entry.length > 2 ? entry.slice(2) : []);
+      } else {
+        _ref = entry.slice(1);
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          property = _ref[_i];
+          this._destroyEntry([property]);
+        }
       }
     }
     return _.keypath(this.owner, key, null);
@@ -113,12 +124,12 @@ Mixin.AutoMemory.WrappedProperty = (function() {
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         key = _ref[_i];
         if (!_.keypathExists(this.owner, key)) {
-          throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.className(this.owner)) + "'");
+          throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.classOf(this.owner)) + "'");
         }
       }
     } else {
       if (!_.keypathExists(this.owner, this.key)) {
-        throw new Error("Mixin.AutoMemory: property '" + this.key + "' doesn't exist on '" + (_.className(this.owner)) + "'");
+        throw new Error("Mixin.AutoMemory: property '" + this.key + "' doesn't exist on '" + (_.classOf(this.owner)) + "'");
       }
     }
     if (this.fn_ref && !(_.isFunction(this.fn_ref) || _.isString(this.fn_ref))) {
@@ -158,7 +169,7 @@ Mixin.AutoMemory.WrappedProperty = (function() {
       this.fn_ref.apply(this.owner, [wrapped_value].concat(this.args ? this.args.slice() : []));
     } else {
       if (Mixin.DEBUG && !_.isFunction(wrapped_value[this.fn_ref])) {
-        throw new Error("Mixin.AutoMemory: function '" + this.fn_ref + "' missing for wrapped property '" + key + "' on '" + (_.className(this.owner)) + "'");
+        throw new Error("Mixin.AutoMemory: function '" + this.fn_ref + "' missing for wrapped property '" + key + "' on '" + (_.classOf(this.owner)) + "'");
       }
       wrapped_value[this.fn_ref].apply(wrapped_value, this.args);
     }
@@ -212,7 +223,10 @@ Mixin.AutoMemory._mixin_info = {
   },
   mixin_object: {
     autoProperty: function(key, fn_ref) {
-      Mixin.instanceData(this, 'AutoMemory').push(new Mixin.AutoMemory.Property(this, key, fn_ref, Array.prototype.slice.call(arguments, 2)));
+      var auto_property;
+      auto_property = new Mixin.AutoMemory.Property(this);
+      auto_property.setArgs.apply(auto_property, arguments);
+      Mixin.instanceData(this, 'AutoMemory').push(auto_property);
       return this;
     },
     autoWrappedProperty: function(key, fn_ref, wrapper) {

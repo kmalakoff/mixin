@@ -7,7 +7,7 @@ $(document).ready(function() {
     return Mixin.AutoMemory.AutoMemory;
   });
   test("Use case: autoProperty common usage", function() {
-    var $el, AutoPropertyByArray, AutoPropertyCommon, SomeProperty, instance, some_property_destroy_count;
+    var $el, AutoPropertyByArray, AutoPropertyByKeypath, AutoPropertyByKeypathWithFunction, AutoPropertyCommon, SomeProperty, embedded1_embedded, embedded2_embedded, instance, some_property_destroy_count;
     some_property_destroy_count = 0;
     SomeProperty = (function() {
       function SomeProperty() {}
@@ -59,7 +59,49 @@ $(document).ready(function() {
     instance = new AutoPropertyByArray();
     ok(instance.you && instance.are && instance.here, "you are here");
     instance.destroy();
-    return ok(!(instance.you && instance.are && instance.here), "you are not here");
+    ok(!(instance.you && instance.are && instance.here), "you are not here");
+    AutoPropertyByKeypath = (function() {
+      function AutoPropertyByKeypath() {
+        Mixin["in"](this, 'AutoMemory');
+        this.embedded = new AutoPropertyByArray();
+        this.autoProperty(['embedded.you', 'embedded.are', 'embedded.here']);
+      }
+      AutoPropertyByKeypath.prototype.destroy = function() {
+        return Mixin.out(this, 'AutoMemory');
+      };
+      return AutoPropertyByKeypath;
+    })();
+    instance = new AutoPropertyByKeypath();
+    ok(instance.embedded.you && instance.embedded.are && instance.embedded.here, "keypath: you are here");
+    instance.destroy();
+    ok(!(instance.embedded.you && instance.embedded.are && instance.embedded.here), "keypath: you are not here");
+    AutoPropertyByKeypathWithFunction = (function() {
+      function AutoPropertyByKeypathWithFunction() {
+        Mixin["in"](this, 'AutoMemory');
+        this.embedded1 = new AutoPropertyByKeypath();
+        this.embedded2 = new AutoPropertyByKeypath();
+        this.autoProperty(['embedded1.embedded', 'destroy'], [
+          'embedded2.embedded', (function(embedded2, param1, param2) {
+            embedded2.destroy();
+            equal(param1, 'test_param1', 'test_param1');
+            return equal(param2, 'test_param2', 'test_param2');
+          }), 'test_param1', 'test_param2'
+        ]);
+      }
+      AutoPropertyByKeypathWithFunction.prototype.destroy = function() {
+        return Mixin.out(this, 'AutoMemory');
+      };
+      return AutoPropertyByKeypathWithFunction;
+    })();
+    instance = new AutoPropertyByKeypathWithFunction();
+    embedded1_embedded = instance.embedded1.embedded;
+    embedded2_embedded = instance.embedded2.embedded;
+    ok(instance.embedded1.embedded.you && instance.embedded1.embedded.are && instance.embedded1.embedded.here, "keypath embedded1: you are here");
+    ok(instance.embedded2.embedded.you && instance.embedded2.embedded.are && instance.embedded2.embedded.here, "keypath embedded2: you are here");
+    instance.destroy();
+    ok(!(instance.embedded1.embedded && instance.embedded2.embedded), "keypath embedded: embedded1.embedded and embedded2.embedded were cleared");
+    ok(!(embedded1_embedded.you && embedded1_embedded.are && embedded1_embedded.here), "keypath embedded1_embedded: you are not here");
+    return ok(!(embedded2_embedded.you && embedded2_embedded.are && embedded2_embedded.here), "keypath embedded2_embedded: you are not here");
   });
   test("autoProperty valid and invalid", function() {
     var AutoProperty, AutoWrappedPropertyByArray, SomeProperty, instance, prop_2_cleared, some_property_destroy_count, some_property_param1, some_property_param2;

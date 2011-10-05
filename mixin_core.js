@@ -1,7 +1,7 @@
 /*
-  mixin_core.js 0.1.0
+  mixin.js 0.1.0
   (c) 2011 Kevin Malakoff.
-  Mixin.Core is freely distributable under the MIT license.
+  Mixin is freely distributable under the MIT license.
   See the following for full license details:
     https://github.com/kmalakoff/mixin/blob/master/LICENSE
   Dependencies: None.

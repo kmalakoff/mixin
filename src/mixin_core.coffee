@@ -1,7 +1,7 @@
 ###
-  mixin_core.js 0.1.0
+  mixin.js 0.1.0
   (c) 2011 Kevin Malakoff.
-  Mixin.Core is freely distributable under the MIT license.
+  Mixin is freely distributable under the MIT license.
   See the following for full license details:
     https://github.com/kmalakoff/mixin/blob/master/LICENSE
   Dependencies: None.
@@ -226,12 +226,12 @@ class Mixin.Core._Manager
   # Mixin Management Methods
   ####################################################
   # mixin_info properties
-  #   mixin_name - string (required) 
+  #   mixin_name - string (required)
   #   mixin_object - object with properties to mixin (required)
   #   initialize - function called on each instance when Mixin.in is called
   #   destroy - function called on each instance when Mixin.out is called
   #   Note: initialize and destroy are called with the mixin bound to 'this'.
-  
+
   @registerMixin: (mixin_info, overwrite) ->
     Mixin.Core._Validate.mixinInfo(mixin_info, overwrite, 'Mixin.registerMixin') if Mixin.DEBUG
     _Manager.available_mixins[mixin_info.mixin_name] = mixin_info

@@ -17,26 +17,50 @@ Mixin.AutoMemory.root = this
 Mixin.AutoMemory.WRAPPER = if (Mixin.AutoMemory.root['$']) then $ else '$'
 
 class Mixin.AutoMemory.Property
-  constructor: (@owner, @key, @fn_ref, @args) ->
+  constructor: (@owner) ->
+  # accepts:
+  #   key
+  #   fn_or_fn_name args
+  #   [key1, key2, etc]
+  #   [[key1, fn_or_fn_name1 args1], key2, etc]
+  setArgs: ->
+    throw new Error("Mixin.AutoMemory: missing key") if not arguments.length
+    @args = Array.prototype.slice.call(arguments)
     return this if not Mixin.DEBUG
-    throw new Error("Mixin.AutoMemory: missing key") if not @key
-    if _.isArray(@key)
-      (throw new Error("Mixin.AutoMemory: property '#{key}' doesn't exist on '#{_.className(@owner)}'") if not _.keypathExists(@owner, key)) for key in @key
+    # [key1, key2, etc] or [[key1, fn_or_fn_name1 args1], key2, etc]
+    if _.isArray(@args[0])
+      @_validateEntry(key_or_array) for key_or_array in @args
+    # key or fn_or_fn_name args
     else
-      throw new Error("Mixin.AutoMemory: property '#{@key}' doesn't exist on '#{_.className(@owner)}'") if not _.keypathExists(@owner, @key)
-    throw new Error("Mixin.AutoMemory: unexpected function reference for property '#{@key}' on '#{_.className(@owner)}'") if @fn_ref and not (_.isFunction(@fn_ref) or _.isString(@fn_ref))
-  destroy: ->
-    if _.isArray(@key) then (@_destroyKey(key) for key in @key) else @_destroyKey(@key)
+      @_validateEntry(@args)
 
-  _destroyKey: (key) ->
-    (_.keypath(@owner, key, null); return) if not @fn_ref
+  destroy: ->
+    # [key1, key2, etc] or [[key1, fn_or_fn_name1 args1], key2, etc]
+    if _.isArray(@args[0])
+      @_destroyEntry(key_or_array) for key_or_array in @args
+    # key or fn_or_fn_name args
+    else
+      @_destroyEntry(@args)
+
+  _validateEntry: (entry) ->
+    key = entry[0]; fn_ref = if (entry.length>1) then entry[1] else undefined
+    throw new Error("Mixin.AutoMemory: property '#{key}' doesn't exist on '#{_.classOf(@owner)}'") if not _.keypathExists(@owner, key)
+    throw new Error("Mixin.AutoMemory: unexpected function reference for property '#{key}' on '#{_.classOf(@owner)}'") if fn_ref and not (_.isFunction(fn_ref) or _.isString(fn_ref))
+
+  _destroyEntry: (entry) ->
+    key = entry[0]; fn_ref = if (entry.length>1) then entry[1] else undefined
+    (_.keypath(@owner, key, null); return) if not fn_ref
     value = _.keypath(@owner, key)
     return if not value
-    if (_.isFunction(@fn_ref))
-      @fn_ref.apply(@owner,[value].concat(if @args then @args.slice() else []))
+    if (_.isFunction(fn_ref))
+      fn_ref.apply(@owner,[value].concat(if entry.length>2 then entry.slice(2) else []))
     else
-      throw new Error("Mixin.AutoMemory: function '#{@fn_ref}' missing for property '#{key}' on '#{_.className(@owner)}'") if Mixin.DEBUG and not _.isFunction(value[@fn_ref])
-      value[@fn_ref].apply(value, @args) if _.isFunction(value[@fn_ref])
+      # a function
+      if _.isFunction(value[fn_ref])
+        value[fn_ref].apply(value, if entry.length>2 then entry.slice(2) else [])
+      # properties array
+      else
+        @_destroyEntry([property]) for property in entry.slice(1)
     _.keypath(@owner, key, null)
 
 class Mixin.AutoMemory.WrappedProperty
@@ -47,9 +71,9 @@ class Mixin.AutoMemory.WrappedProperty
     return this if not Mixin.DEBUG
     throw new Error("Mixin.AutoMemory: missing key") if not @key
     if _.isArray(@key)
-      (throw new Error("Mixin.AutoMemory: property '#{key}' doesn't exist on '#{_.className(@owner)}'") if not _.keypathExists(@owner, key)) for key in @key
+      (throw new Error("Mixin.AutoMemory: property '#{key}' doesn't exist on '#{_.classOf(@owner)}'") if not _.keypathExists(@owner, key)) for key in @key
     else
-      throw new Error("Mixin.AutoMemory: property '#{@key}' doesn't exist on '#{_.className(@owner)}'") if not _.keypathExists(@owner, @key)
+      throw new Error("Mixin.AutoMemory: property '#{@key}' doesn't exist on '#{_.classOf(@owner)}'") if not _.keypathExists(@owner, @key)
     throw new Error("Mixin.AutoMemory: unexpected function reference") if @fn_ref and not (_.isFunction(@fn_ref) or _.isString(@fn_ref))
     throw new Error("Mixin.AutoMemory: missing wrapper") if not @wrapper
 
@@ -65,7 +89,7 @@ class Mixin.AutoMemory.WrappedProperty
     if (_.isFunction(@fn_ref))
       @fn_ref.apply(@owner,[wrapped_value].concat(if @args then @args.slice() else []))
     else
-      throw new Error("Mixin.AutoMemory: function '#{@fn_ref}' missing for wrapped property '#{key}' on '#{_.className(@owner)}'") if Mixin.DEBUG and not _.isFunction(wrapped_value[@fn_ref])
+      throw new Error("Mixin.AutoMemory: function '#{@fn_ref}' missing for wrapped property '#{key}' on '#{_.classOf(@owner)}'") if Mixin.DEBUG and not _.isFunction(wrapped_value[@fn_ref])
       wrapped_value[@fn_ref].apply(wrapped_value, @args)
     _.keypath(@owner, key, null)
 
@@ -90,7 +114,8 @@ Mixin.AutoMemory._mixin_info =
 
   mixin_object: {
     autoProperty: (key, fn_ref) ->
-      Mixin.instanceData(this, 'AutoMemory').push(new Mixin.AutoMemory.Property(this, key, fn_ref, Array.prototype.slice.call(arguments, 2)))
+      auto_property = new Mixin.AutoMemory.Property(this); auto_property.setArgs.apply(auto_property, arguments)
+      Mixin.instanceData(this, 'AutoMemory').push(auto_property)
       return this
     autoWrappedProperty: (key, fn_ref, wrapper) ->
       wrapper=Mixin.AutoMemory.WRAPPER if (wrapper==undefined)

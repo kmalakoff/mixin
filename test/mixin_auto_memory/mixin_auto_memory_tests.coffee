@@ -45,6 +45,46 @@ $(document).ready( ->
     ok(instance.you and instance.are and instance.here, "you are here")
     instance.destroy()
     ok(not (instance.you and instance.are and instance.here), "you are not here")
+
+    class AutoPropertyByKeypath
+      constructor: ->
+        Mixin.in(this, 'AutoMemory')
+        @embedded = new AutoPropertyByArray()
+        @autoProperty(['embedded.you', 'embedded.are', 'embedded.here'])
+      destroy: ->
+        Mixin.out(this, 'AutoMemory')
+
+    instance = new AutoPropertyByKeypath()
+    ok(instance.embedded.you and instance.embedded.are and instance.embedded.here, "keypath: you are here")
+    instance.destroy()
+    ok(not (instance.embedded.you and instance.embedded.are and instance.embedded.here), "keypath: you are not here")
+
+    class AutoPropertyByKeypathWithFunction
+      constructor: ->
+        Mixin.in(this, 'AutoMemory')
+        @embedded1 = new AutoPropertyByKeypath()
+        @embedded2 = new AutoPropertyByKeypath()
+        @autoProperty(
+          ['embedded1.embedded', 'destroy'],
+          ['embedded2.embedded',
+            ((embedded2, param1, param2)->
+              embedded2.destroy()
+              equal(param1, 'test_param1', 'test_param1')
+              equal(param2, 'test_param2', 'test_param2')
+            ), 'test_param1', 'test_param2'
+          ]
+        )
+      destroy: ->
+        Mixin.out(this, 'AutoMemory')
+
+    instance = new AutoPropertyByKeypathWithFunction()
+    embedded1_embedded = instance.embedded1.embedded; embedded2_embedded = instance.embedded2.embedded
+    ok(instance.embedded1.embedded.you and instance.embedded1.embedded.are and instance.embedded1.embedded.here, "keypath embedded1: you are here")
+    ok(instance.embedded2.embedded.you and instance.embedded2.embedded.are and instance.embedded2.embedded.here, "keypath embedded2: you are here")
+    instance.destroy()
+    ok(not (instance.embedded1.embedded and instance.embedded2.embedded), "keypath embedded: embedded1.embedded and embedded2.embedded were cleared")
+    ok(not (embedded1_embedded.you and embedded1_embedded.are and embedded1_embedded.here), "keypath embedded1_embedded: you are not here")
+    ok(not (embedded2_embedded.you and embedded2_embedded.are and embedded2_embedded.here), "keypath embedded2_embedded: you are not here")
   )
 
   test("autoProperty valid and invalid", ->

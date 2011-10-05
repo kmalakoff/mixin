@@ -895,7 +895,7 @@
   var eventSplitter = /^(\S+)\s*(.*)$/;
 
   // List of view options to be merged as properties.
-  var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName'];
+  var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'classOf', 'tagName'];
 
   // Set up all inheritable **Backbone.View** properties and methods.
   _.extend(Backbone.View.prototype, Backbone.Events, {
@@ -970,7 +970,7 @@
     },
 
     // Performs the initial configuration of a View with a set of options.
-    // Keys with special meaning *(model, collection, id, className)*, are
+    // Keys with special meaning *(model, collection, id, classOf)*, are
     // attached directly to the view.
     _configure : function(options) {
       if (this.options) options = _.extend({}, this.options, options);
@@ -984,12 +984,12 @@
     // Ensure that the View has a DOM element to render into.
     // If `this.el` is a string, pass it through `$()`, take the first
     // matching element, and re-assign it to `el`. Otherwise, create
-    // an element from the `id`, `className` and `tagName` proeprties.
+    // an element from the `id`, `classOf` and `tagName` proeprties.
     _ensureElement : function() {
       if (!this.el) {
         var attrs = this.attributes || {};
         if (this.id) attrs.id = this.id;
-        if (this.className) attrs['class'] = this.className;
+        if (this.classOf) attrs['class'] = this.classOf;
         this.el = this.make(this.tagName, attrs);
       } else if (_.isString(this.el)) {
         this.el = $(this.el).get(0);
