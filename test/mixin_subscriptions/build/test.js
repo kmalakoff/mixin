@@ -5,7 +5,7 @@ $(document).ready(function() {
     _.AWESOMENESS.Underscore_Awesome;
     return Mixin.Subscriptions.Subscriptions;
   });
-  test("Use case: simple scenario", function() {
+  test("Use case: reasonably complex scenario", function() {
     var ObservableSubscriber, Observerable, Subscriber, observable_subscriber, source, subscriber;
     Observerable = (function() {
       function Observerable() {
@@ -213,25 +213,25 @@ $(document).ready(function() {
     observable = new Observerable();
     raises((function() {
       return observable.addSubscriber();
-    }), Error, "Mixin.Observable.subscribe: subscriber missing");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber missing");
     raises((function() {
       return observable.addSubscriber('Hello');
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     raises((function() {
       return observable.addSubscriber(0);
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     raises((function() {
       return observable.addSubscriber({});
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     raises((function() {
       return observable.addSubscriber([]);
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     raises((function() {
       return observable.addSubscriber(observable);
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     raises((function() {
       return observable.addSubscriber(Observerable);
-    }), Error, "Mixin.Observable.subscribe: subscriber invalid");
+    }), Error, "Mixin.Observable.addSubscriber: subscriber invalid");
     subscriber = new Subscriber();
     raises((function() {
       return observable.addSubscriber(subscriber, 'Hello');

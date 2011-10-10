@@ -229,21 +229,19 @@ Mixin.Subscriptions.Observable._mixin_info = {
         var subscription;
         options || (options = {});
         if (Mixin.DEBUG) {
-          Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.subscribe', 'subscription_name');
-          Mixin.Core._Validate.callback(notification_callback, 'Mixin.Observable.subscribe', 'notification_callback');
-          Mixin.Core._Validate.object(options, 'Mixin.Observable.subscribe', 'options');
+          Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.addSubscriber', 'subscription_name');
+          Mixin.Core._Validate.callback(notification_callback, 'Mixin.Observable.addSubscriber', 'notification_callback');
+          Mixin.Core._Validate.object(options, 'Mixin.Observable.addSubscriber', 'options');
           if (options.destroy !== void 0) {
-            Mixin.Core._Validate.callback(options.destroy, 'Mixin.Observable.subscribe', 'options.destroy');
+            Mixin.Core._Validate.callback(options.destroy, 'Mixin.Observable.addSubscriber', 'options.destroy');
           }
         }
-        Mixin.Core._Validate.hasKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.subscribe', 'subscription_name');
+        Mixin.Core._Validate.hasKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.addSubscriber', 'subscription_name');
         subscription = instance_data.subscriptions[subscription_name];
         return subscription.addSubscriber(subscriber, notification_callback, options);
       };
       args = Array.prototype.slice.call(arguments, 1);
-      if (Mixin.DEBUG) {
-        Mixin.Core._Validate.instanceWithMixin(subscriber, 'Subscriber', 'Mixin.Observable.subscribe', 'subscriber');
-      }
+      Mixin.Core._Validate.instanceWithMixin(subscriber, 'Subscriber', 'Mixin.Observable.addSubscriber', 'subscriber');
       if (args.length > 1) {
         check_arg = args[1];
         if (!((_.isString(check_arg) && this.hasSubscription(check_arg)) || (_.isArray(check_arg) && (check_arg.length >= 1) && _.isString(check_arg[0]) && this.hasSubscription(check_arg[0])))) {

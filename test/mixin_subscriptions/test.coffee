@@ -5,7 +5,7 @@ $(document).ready( ->
     Mixin.Subscriptions.Subscriptions
   )
 
-  test("Use case: simple scenario", ->
+  test("Use case: reasonably complex scenario", ->
     class Observerable
       constructor: ->
         Mixin.in(this, 'Observable', 'update', 'destroy')
@@ -146,13 +146,13 @@ $(document).ready( ->
     raises((->observable.subscribers(Observerable)), Error, "Mixin.Observable.subscribers: subscription_name invalid")
 
     observable = new Observerable()
-    raises((->observable.addSubscriber()), Error, "Mixin.Observable.subscribe: subscriber missing")
-    raises((->observable.addSubscriber('Hello')), Error, "Mixin.Observable.subscribe: subscriber invalid")
-    raises((->observable.addSubscriber(0)), Error, "Mixin.Observable.subscribe: subscriber invalid")
-    raises((->observable.addSubscriber({})), Error, "Mixin.Observable.subscribe: subscriber invalid")
-    raises((->observable.addSubscriber([])), Error, "Mixin.Observable.subscribe: subscriber invalid")
-    raises((->observable.addSubscriber(observable)), Error, "Mixin.Observable.subscribe: subscriber invalid")
-    raises((->observable.addSubscriber(Observerable)), Error, "Mixin.Observable.subscribe: subscriber invalid")
+    raises((->observable.addSubscriber()), Error, "Mixin.Observable.addSubscriber: subscriber missing")
+    raises((->observable.addSubscriber('Hello')), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
+    raises((->observable.addSubscriber(0)), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
+    raises((->observable.addSubscriber({})), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
+    raises((->observable.addSubscriber([])), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
+    raises((->observable.addSubscriber(observable)), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
+    raises((->observable.addSubscriber(Observerable)), Error, "Mixin.Observable.addSubscriber: subscriber invalid")
     subscriber = new Subscriber()
     raises((->observable.addSubscriber(subscriber, 'Hello')), Error, "Mixin.Observable.subscribe: Hello does not exist for subscription_name")
     raises((->observable.addSubscriber(subscriber, ['Hello'])), Error, "Mixin.Observable.subscribe: Hello does not exist for subscription_name")

@@ -143,19 +143,18 @@ Mixin.Subscriptions.Observable._mixin_info =
       _doSubscribe = (subscription_name, notification_callback, options) ->
         options||options={}
         if Mixin.DEBUG
-          Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.subscribe', 'subscription_name')
-          Mixin.Core._Validate.callback(notification_callback, 'Mixin.Observable.subscribe', 'notification_callback')
-          Mixin.Core._Validate.object(options, 'Mixin.Observable.subscribe', 'options')
-          Mixin.Core._Validate.callback(options.destroy, 'Mixin.Observable.subscribe', 'options.destroy') if (options.destroy!=undefined)
+          Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.addSubscriber', 'subscription_name')
+          Mixin.Core._Validate.callback(notification_callback, 'Mixin.Observable.addSubscriber', 'notification_callback')
+          Mixin.Core._Validate.object(options, 'Mixin.Observable.addSubscriber', 'options')
+          Mixin.Core._Validate.callback(options.destroy, 'Mixin.Observable.addSubscriber', 'options.destroy') if (options.destroy!=undefined)
 
-        Mixin.Core._Validate.hasKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.subscribe', 'subscription_name')
+        Mixin.Core._Validate.hasKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.addSubscriber', 'subscription_name')
         subscription = instance_data.subscriptions[subscription_name]
         subscription.addSubscriber(subscriber, notification_callback, options)
 
       # check for infering parameters
       args = Array.prototype.slice.call(arguments, 1)
-      if Mixin.DEBUG
-        Mixin.Core._Validate.instanceWithMixin(subscriber, 'Subscriber', 'Mixin.Observable.subscribe', 'subscriber')
+      Mixin.Core._Validate.instanceWithMixin(subscriber, 'Subscriber', 'Mixin.Observable.addSubscriber', 'subscriber')
       if (args.length>1)
         check_arg = args[1]
         # the next parameter after the first subscription is not a subscription
