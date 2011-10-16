@@ -21,6 +21,15 @@ Mixin.js brings "dynamic aspect-oriented programming" to Javascript. "Dynamic" m
 Classic object-oriented design can force you to regularly make tradeoff decisions based on your evolving subclasses like deciding between polluting common super classes  (eg. push common functionality up the hierarchy whenever it needs to be reused) vs making un-DRY code when only a subset of sub-classes require common functionality (eg. cut/paste and maintain the code). Mixin.js provides you with a light framework to avoid the decision altogether...make a mixin, use it where & when you need it...decisions made, stay made.
 
 ****************
+I bet you're asking yourself what made me I write this anyways and...isn't it overkill?
+
+The problem I had was that I was implementing Backbone.Views. Some of them needed scrollable content areas (using iScroll), some of them needed to be dynamically rendered based on Backbone.Models loading and unloading whereas others needed to render collections, some of them needed to have timers to change state after a specific timeout, all of them had custom destroy methods to unbind jQuery events, some views needed to subscribe to state changes on other views, etc. My base view class was becoming a kitchen sink class and I thought, there's got to be a better way!
+
+So I started on the path of factoring out each aspect, providing initialize and destroy code for each, and mixing-in functionality on the fly. Now, I have a very simple view base class that only provides the minimal & common view functionality (it actually doesn't even need to be a Backbone.View anymore since all the functionality is now in mixins) and a view hierarchy two deep. Each view is simple to read, light on code, and customized to meet its unique needs.
+
+Overkill? Try it and you can decide.
+
+****************
 Mixin.js goes beyond Javascript's 'Object.extend' by providing:
 
   1) optional initialize and destroy methods that are called when the mixin is added or removed using Mixin.in(instance, 'MixinName') and Mixin.out(instance, 'MixinName') respectively.
