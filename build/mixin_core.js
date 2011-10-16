@@ -24,7 +24,7 @@ var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments)
 };
 this.Mixin || (this.Mixin = {});
 this.Mixin.Core || (this.Mixin.Core = {});
-Mixin.VERSION = '0.1.0';
+Mixin.VERSION = '0.1.1';
 _ || (_ = {});
 if (!_.isArray) {
   _.isArray = function(obj) {
@@ -75,6 +75,18 @@ if (!_.size) {
       i++;
     }
     return i;
+  };
+}
+if (!_.find) {
+  _.find = function(obj, iter) {
+    var item, _i, _len;
+    for (_i = 0, _len = obj.length; _i < _len; _i++) {
+      item = obj[_i];
+      if (iter(item)) {
+        return item;
+      }
+    }
+    return null;
   };
 }
 Mixin.Core._Validate = (function() {
@@ -300,7 +312,8 @@ Mixin.Core._InstanceRecord = (function() {
   return _InstanceRecord;
 })();
 Mixin.Core._ClassRecord = (function() {
-  function _ClassRecord() {
+  function _ClassRecord(constructor) {
+    this.constructor = constructor;
     this.mixins = {};
     this.instance_records = [];
   }
@@ -457,23 +470,23 @@ Mixin.Core._Manager = (function() {
     return mix_target;
   };
   _Manager.mixout = function(mix_target, mixin_name_or_names) {
-    var constructor, parameter, _doMixout, _i, _len, _ref;
+    var class_record, parameter, _doMixout, _i, _j, _len, _len2, _ref, _ref2;
     if (Mixin.DEBUG) {
       Mixin.Core._Validate.instance(mix_target, 'Mixin.mixin', 'mix_target');
     }
     _doMixout = __bind(function(mix_target, mixin_name) {
-      var constructor;
+      var class_record, _i, _len, _ref;
       if (Mixin.DEBUG) {
         Mixin.Core._Validate.string(mixin_name, 'Mixin.mixin.mixout', 'mixin_name');
       }
-      constructor = mix_target.constructor;
-      while (constructor) {
-        if (constructor._mixin_class_record) {
-          if (constructor._mixin_class_record.destroyInstance(mix_target, mixin_name)) {
+      if (mix_target.constructor._mixin_class_records) {
+        _ref = mix_target.constructor._mixin_class_records;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          class_record = _ref[_i];
+          if (class_record.destroyInstance(mix_target, mixin_name)) {
             return mix_target;
           }
         }
-        constructor = constructor.__super__ && (constructor.__super__.constructor !== constructor) ? constructor.__super__.constructor : void 0;
       }
       return mix_target;
     }, this);
@@ -484,14 +497,14 @@ Mixin.Core._Manager = (function() {
         _doMixout(mix_target, parameter);
       }
     } else {
-      constructor = mix_target.constructor;
-      while (constructor) {
-        if (constructor._mixin_class_record) {
-          if (constructor._mixin_class_record.destroyInstance(mix_target)) {
+      if (mix_target.constructor._mixin_class_records) {
+        _ref2 = mix_target.constructor._mixin_class_records;
+        for (_j = 0, _len2 = _ref2.length; _j < _len2; _j++) {
+          class_record = _ref2[_j];
+          if (class_record.destroyInstance(mix_target)) {
             return mix_target;
           }
         }
-        constructor = constructor.__super__ && (constructor.__super__.constructor !== constructor) ? constructor.__super__.constructor : void 0;
       }
     }
     return mix_target;
@@ -515,7 +528,7 @@ Mixin.Core._Manager = (function() {
       if (_Manager.hasInstanceData(mix_target, mixin_name)) {
         return true;
       }
-      class_record = _Manager._findClassRecord(mix_target.constructor, mixin_name);
+      class_record = _Manager._findClassRecord(mix_target, mixin_name);
       if (!class_record) {
         return false;
       }
@@ -523,47 +536,84 @@ Mixin.Core._Manager = (function() {
     }
   };
   _Manager.mixins = function(mix_target) {
-    var constructor, mixins;
+    var class_record, mixins, _i, _len, _ref;
     if (Mixin.DEBUG) {
       Mixin.Core._Validate.instance(mix_target, mixins, 'Mixin.mixins', 'mix_target');
     }
     mixins = [];
-    constructor = mix_target.constructor;
-    while (constructor) {
-      if (constructor._mixin_class_record) {
-        constructor._mixin_class_record.collectMixinsForInstance(mixins, mix_target);
+    if (mix_target.constructor._mixin_class_records) {
+      _ref = mix_target.constructor._mixin_class_records;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        class_record = _ref[_i];
+        class_record.collectMixinsForInstance(mixins, mix_target);
       }
-      constructor = constructor.__super__ && (constructor.__super__.constructor !== constructor) ? constructor.__super__.constructor : void 0;
     }
     return mixins;
   };
-  _Manager.classHasMixin = function(constructor, mixin_name) {
-    if (Mixin.DEBUG) {
-      Mixin.Core._Validate.classConstructorAndMixinName(constructor, mixin_name, 'classHasMixin');
-    }
-    return !!_Manager._findClassRecord(constructor, mixin_name);
-  };
-  _Manager._findClassRecord = function(constructor, mixin_name) {
+  _Manager._getClassRecords = function(mix_target) {
+    var class_record, class_records, constructor, _i, _len, _ref;
+    class_records = [];
+    constructor = mix_target.constructor;
     while (constructor) {
-      if (constructor._mixin_class_record && constructor._mixin_class_record.classHasMixin(mixin_name)) {
-        return constructor._mixin_class_record;
+      if (constructor._mixin_class_records) {
+        _ref = constructor._mixin_class_records;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          class_record = _ref[_i];
+          if (mix_target instanceof class_record.constructor) {
+            class_records.push(class_record);
+          }
+        }
       }
       constructor = constructor.__super__ && (constructor.__super__.constructor !== constructor) ? constructor.__super__.constructor : void 0;
     }
+    return class_records;
+  };
+  _Manager._findClassRecord = function(mix_target, mixin_name) {
+    var class_record, class_records, _i, _len;
+    class_records = this._getClassRecords(mix_target);
+    for (_i = 0, _len = class_records.length; _i < _len; _i++) {
+      class_record = class_records[_i];
+      if (class_record.classHasMixin(mixin_name)) {
+        return class_record;
+      }
+    }
   };
   _Manager._findOrCreateClassRecord = function(mix_target, mixin_info) {
-    var class_record;
-    class_record = _Manager._findClassRecord(mix_target.constructor, mixin_info.mixin_name);
+    var class_record, i, l, other_class_record, was_added;
+    class_record = _Manager._findClassRecord(mix_target, mixin_info.mixin_name);
     if (class_record) {
       return class_record;
     }
-    if (!mix_target.constructor._mixin_class_record) {
-      mix_target.constructor._mixin_class_record = new Mixin.Core._ClassRecord();
+    if (mix_target.constructor._mixin_class_records) {
+      class_record = _.find(mix_target.constructor._mixin_class_records, function(test) {
+        return test.constructor === mix_target.constructor;
+      });
+    }
+    if (!class_record) {
+      class_record = new Mixin.Core._ClassRecord(mix_target.constructor);
+      if (mix_target.constructor._mixin_class_records) {
+        was_added = false;
+        i = 0;
+        l = mix_target.constructor._mixin_class_records.length;
+        while (i < l) {
+          other_class_record = mix_target.constructor._mixin_class_records[i];
+          if (mix_target instanceof other_class_record.constructor) {
+            mix_target.constructor._mixin_class_records.splice(i, 0, class_record);
+            was_added = true;
+            break;
+          }
+          i++;
+        }
+        if (!was_added) {
+          mix_target.constructor._mixin_class_records.push(class_record);
+        }
+      } else {
+        mix_target.constructor._mixin_class_records = [class_record];
+      }
       if (Mixin._statistics) {
-        Mixin._statistics.addConstructor(mix_target.constructor);
+        Mixin._statistics.addClassRecord(class_record);
       }
     }
-    class_record = mix_target.constructor._mixin_class_record;
     return class_record;
   };
   _Manager.hasInstanceData = function(mix_target, mixin_name) {
@@ -617,7 +667,6 @@ Mixin.hasMixin = Mixin.exists = Mixin.Core._Manager.hasMixin;
 Mixin.mixins = Mixin.Core._Manager.mixins;
 Mixin.hasInstanceData = Mixin.hasID = Mixin.Core._Manager.hasInstanceData;
 Mixin.instanceData = Mixin.iD = Mixin.Core._Manager.instanceData;
-Mixin.classHasMixin = Mixin.Core._Manager.classHasMixin;
 if (typeof exports !== 'undefined') {
   exports.Mixin = Mixin;
 }

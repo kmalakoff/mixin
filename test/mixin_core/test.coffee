@@ -30,7 +30,6 @@ $(document).ready( ->
     # post-mixout
     Mixin.out(instance, 'Test')
     equal(Mixin.hasMixin(instance, 'Test'), false, 'TestClass instance no longer reported as mixed in')
-    equal(Mixin.classHasMixin(TestClass, 'Test'), true, 'TestClass still has the mixed in properties')
     ok(TestClass.prototype.sayHello, 'TestClass still has the class-level function sayHello')
     equal(instance.sayHello(), 'Hello', 'TestClass still works, but you should not call it. If the mixin has instance data, it would throw an exception.')
 
@@ -61,7 +60,6 @@ $(document).ready( ->
 
     Mixin.out(instance, 'Test2')
     equal(Mixin.hasMixin(instance, 'Test2'), false, 'TestClass instance no longer reported as mixed in')
-    equal(Mixin.classHasMixin(TestClass2, 'Test2'), true, 'TestClass still has the mixed in properties')
     equal(Mixin.hasInstanceData(instance, 'Test2'), false, 'TestClass2 does not have Test2 instance data')
     ok(TestClass2.prototype.sayHello2, 'TestClass still has the class-level function sayHello2')
     raises(instance.sayHello2, Error, "Mixin: no instance data on instance of 'TestClass2'")
@@ -174,17 +172,6 @@ $(document).ready( ->
     raises((->Mixin.mixins([], 'MixinType1')), Error, "Mixin.mixins: mix_target invalid for for 'MixinType1'")
     raises((->Mixin.mixins(MixTarget)), Error, "Mixin.mixins: mix_target invalid")
     Mixin.out(instance, 'MixinType1', 'MixinType2', 'MixinType3') # test cleanup
-
-    # classHasMixin
-    equal(Mixin.classHasMixin(MixTarget, 'MixinType1'), true, 'classHasMixin MixinType1')
-    equal(Mixin.classHasMixin(MixTarget, 'MixinType2'), true, 'classHasMixin MixinType2')
-    equal(Mixin.classHasMixin(MixTarget, 'MixinType3'), true, 'classHasMixin MixinType3')
-    raises((->Mixin.classHasMixin()), Error, "Mixin.classHasMixin: class constructor missing")
-    raises((->Mixin.classHasMixin(0)), Error, "Mixin.classHasMixin: class constructor invalid")
-    raises((->Mixin.classHasMixin({})), Error, "Mixin.classHasMixin: class constructor invalid")
-    raises((->Mixin.classHasMixin([])), Error, "Mixin.classHasMixin: class constructor invalid")
-    raises((->Mixin.classHasMixin([], 'MixinType1')), Error, "Mixin.classHasMixin: class constructor invalid for for 'MixinType1'")
-    raises((->Mixin.classHasMixin(instance)), Error, "Mixin.classHasMixin: class constructor invalid")
 
     # hasInstanceData/hasID
     Mixin.registerMixin({mixin_name: 'MixinWithInstanceData', initialize: (-> Mixin.instanceData(this, 'MixinWithInstanceData', true)), mixin_object: {}})
@@ -402,11 +389,9 @@ $(document).ready( ->
     equal(Mixin.hasMixin(sub_instance1, 'Ordering'), false, 'test1: Ordering not mixed in')
     Mixin.in(super_instance, 'Ordering')
     equal(Mixin.hasMixin(super_instance, 'Ordering'), true, 'test1: Ordering is mixed in')
-    equal(Mixin.classHasMixin(SubClass1_1, 'Ordering'), true, 'test1: Ordering class has the mixin but it is not initialized')
     equal(Mixin.hasMixin(sub_instance1, 'Ordering'), false, 'test1: Ordering is not mixed in because it was created before the super class mixin')
     equal(Mixin.hasInstanceData(sub_instance1, 'Ordering'), false, 'test1: Ordering instance data does not exist because it was created before the super class mixin')
     sub_instance2 = new SubClass1_1()
-    equal(Mixin.classHasMixin(SubClass1_1, 'Ordering'), true, 'test1: Ordering class has the mixin but it is not initialized')
     equal(Mixin.hasMixin(sub_instance2, 'Ordering'), false, 'test1: Ordering has not yet been initialized')
     equal(Mixin.hasInstanceData(sub_instance2, 'Ordering'), false, 'test1: Ordering instance data does exist because it has not yet been initialized')
     Mixin.out(super_instance, 'Ordering') # test cleanup
@@ -419,7 +404,6 @@ $(document).ready( ->
     Mixin.in(super_instance, 'Ordering')
     sub_instance = new SubClass1_2()
     equal(Mixin.hasMixin(super_instance, 'Ordering'), true, 'test2: Ordering is mixed in')
-    equal(Mixin.classHasMixin(SubClass1_2, 'Ordering'), true, 'test2: Ordering class has the mixin but it is not initialized')
     equal(Mixin.hasMixin(sub_instance, 'Ordering'), false, 'test2: Ordering has not yet been initialized')
     equal(Mixin.hasInstanceData(sub_instance, 'Ordering'), false, 'test2: Ordering instance data does exist because it has not yet been initialized')
     Mixin.out(super_instance, 'Ordering') # test cleanup
@@ -430,8 +414,6 @@ $(document).ready( ->
     sub_instance = new SubClass1_3()
     equal(Mixin.hasMixin(sub_instance, 'Ordering'), false, 'test3: Ordering not mixed in')
     Mixin.in(sub_instance, 'Ordering')
-    equal(Mixin.classHasMixin(SuperClass_3, 'Ordering'), false, 'test1: Ordering class has the mixin but it is not initialized')
-    equal(Mixin.classHasMixin(SubClass1_3, 'Ordering'), true, 'test1: Ordering class has the mixin but it is not initialized')
     super_instance = new SuperClass_3()
     equal(Mixin.hasMixin(sub_instance, 'Ordering'), true, 'test3: Ordering is mixed in')
     equal(Mixin.hasMixin(super_instance, 'Ordering'), false, 'test3: Ordering is mixed in')

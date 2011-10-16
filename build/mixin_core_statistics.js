@@ -5,9 +5,7 @@
   See the following for full license details:
     https://github.com/kmalakoff/mixin/blob/master/LICENSE
   Dependencies: Mixin.Core
-*/
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-if (!Mixin && (typeof exports !== 'undefined')) {
+*/if (!Mixin && (typeof exports !== 'undefined')) {
   this.Mixin = require('mixin_core').Mixin;
 }
 if (!Mixin) {
@@ -18,13 +16,13 @@ if (this.Mixin.STATISTICS === void 0) {
 }
 Mixin.Core.Statistics = (function() {
   function Statistics() {
-    this.constructors = [];
+    this.class_records = [];
   }
-  Statistics.prototype.addConstructor = function(constructor) {
-    return this.constructors.push(constructor);
+  Statistics.prototype.addClassRecord = function(class_record) {
+    return this.class_records.push(class_record);
   };
   Statistics.prototype.purge = function() {
-    this.constructors = [];
+    this.class_records = [];
     return this.clear();
   };
   Statistics.prototype.clear = function() {
@@ -43,89 +41,68 @@ Mixin.Core.Statistics = (function() {
     return this.byConstructor_getInstances();
   };
   Statistics.prototype.byInstance_getMixins = function() {
-    var constructor, _i, _len, _ref;
+    var class_record, _i, _len, _ref;
     if (!this.by_instance_get_mixins) {
       this.by_instance_get_mixins = [];
-      _ref = this.constructors;
+      _ref = this.class_records;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        constructor = _ref[_i];
-        this.constructorIterateClassRecords(constructor, __bind(function() {
-          return this.constructorGetMixinsByInstance(constructor, this.by_instance_get_mixins);
-        }, this));
+        class_record = _ref[_i];
+        this.classRecordGetMixinsByInstance(class_record, this.by_instance_get_mixins);
       }
     }
     return this.by_instance_get_mixins;
   };
   Statistics.prototype.byInstance_withData = function() {
-    var constructor, _i, _len, _ref;
+    var class_record, _i, _len, _ref;
     if (!this.by_instance_with_data) {
       this.by_instance_with_data = [];
-      _ref = this.constructors;
+      _ref = this.class_records;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        constructor = _ref[_i];
-        this.constructorIterateClassRecords(constructor, __bind(function() {
-          return this.constructorGetInstancesWithData(constructor, this.by_instance_with_data);
-        }, this));
+        class_record = _ref[_i];
+        this.classRecordGetInstancesWithData(class_record, this.by_instance_with_data);
       }
     }
     return this.by_instance_with_data;
   };
   Statistics.prototype.byMixin_getInstances = function() {
-    var constructor, _i, _len, _ref;
+    var class_record, _i, _len, _ref;
     if (!this.by_mixin_get_instances) {
       this.by_mixin_get_instances = {};
-      _ref = this.constructors;
+      _ref = this.class_records;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        constructor = _ref[_i];
-        this.constructorIterateClassRecords(constructor, __bind(function() {
-          return this.constructorGetInstancesByMixin(constructor, this.by_mixin_get_instances);
-        }, this));
+        class_record = _ref[_i];
+        this.classRecordGetInstancesByMixin(class_record, this.by_mixin_get_instances);
       }
     }
     return this.by_mixin_get_instances;
   };
   Statistics.prototype.byMixin_getConstructors = function() {
-    var constructor, _i, _len, _ref;
+    var class_record, _i, _len, _ref;
     if (!this.by_mixin_get_constructors) {
       this.by_mixin_get_constructors = {};
-      _ref = this.constructors;
+      _ref = this.class_records;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        constructor = _ref[_i];
-        this.constructorIterateClassRecords(constructor, __bind(function() {
-          return this.constructorGetMixins(constructor, this.by_mixin_get_constructors);
-        }, this));
+        class_record = _ref[_i];
+        this.classRecordGetMixins(class_record, this.by_mixin_get_constructors);
       }
     }
     return this.by_mixin_get_constructors;
   };
   Statistics.prototype.byConstructor_getInstances = function() {
-    var constructor, _i, _len, _ref;
+    var class_record, _i, _len, _ref;
     if (!this.by_constructor_get_instances) {
       this.by_constructor_get_instances = {};
-      _ref = this.constructors;
+      _ref = this.class_records;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        constructor = _ref[_i];
-        this.constructorIterateClassRecords(constructor, __bind(function() {
-          return this.constructorGroupInstances(constructor, this.by_constructor_get_instances);
-        }, this));
+        class_record = _ref[_i];
+        this.classRecordGroupInstances(class_record, this.by_constructor_get_instances);
       }
     }
     return this.by_constructor_get_instances;
   };
-  Statistics.prototype.constructorIterateClassRecords = function(constructor, fn) {
-    var _results;
-    _results = [];
-    while (constructor) {
-      if (constructor._mixin_class_record) {
-        fn(constructor);
-      }
-      _results.push(constructor = constructor.__super__ && (constructor.__super__.constructor !== constructor) ? constructor.__super__.constructor : void 0);
-    }
-    return _results;
-  };
-  Statistics.prototype.constructorGetInstancesWithData = function(constructor, instances) {
+  Statistics.prototype.classRecordGetInstancesWithData = function(class_record, instances) {
     var instance_record, _i, _len, _ref, _results;
-    _ref = constructor._mixin_class_record.instance_records;
+    _ref = class_record.instance_records;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       instance_record = _ref[_i];
@@ -133,12 +110,12 @@ Mixin.Core.Statistics = (function() {
     }
     return _results;
   };
-  Statistics.prototype.constructorGetInstancesByMixin = function(constructor, mixins) {
+  Statistics.prototype.classRecordGetInstancesByMixin = function(class_record, mixins) {
     var instance_record, key, mixin_info, _i, _len, _ref, _results;
-    if (!constructor._mixin_class_record.instance_records.length) {
+    if (!class_record.instance_records.length) {
       return;
     }
-    _ref = constructor._mixin_class_record.instance_records;
+    _ref = class_record.instance_records;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       instance_record = _ref[_i];
@@ -155,9 +132,9 @@ Mixin.Core.Statistics = (function() {
     }
     return _results;
   };
-  Statistics.prototype.constructorGetMixinsByInstance = function(constructor, instances) {
+  Statistics.prototype.classRecordGetMixinsByInstance = function(class_record, instances) {
     var instance_record, _i, _len, _ref, _results;
-    _ref = constructor._mixin_class_record.instance_records;
+    _ref = class_record.instance_records;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       instance_record = _ref[_i];
@@ -177,29 +154,29 @@ Mixin.Core.Statistics = (function() {
     }
     return _results;
   };
-  Statistics.prototype.constructorGroupInstances = function(constructor, constructors) {
+  Statistics.prototype.classRecordGroupInstances = function(class_record, constructors) {
     var instance_record, _i, _len, _ref, _results;
-    if (!constructor._mixin_class_record.instance_records.length) {
+    if (!class_record.instance_records.length) {
       return;
     }
-    if (!constructors.hasOwnProperty(constructor.name)) {
-      constructors[constructor] = [];
+    if (!constructors.hasOwnProperty(class_record.constructor.name)) {
+      constructors[class_record.constructor] = [];
     }
-    _ref = constructor._mixin_class_record.instance_records;
+    _ref = class_record.instance_records;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       instance_record = _ref[_i];
-      _results.push(constructors[constructor].push(instance_record.mix_target));
+      _results.push(constructors[class_record.constructor].push(instance_record.mix_target));
     }
     return _results;
   };
-  Statistics.prototype.constructorGetMixins = function(constructor, mixins, only_with_instances) {
+  Statistics.prototype.classRecordGetMixins = function(class_record, mixins, only_with_instances) {
     var key, mixin_info, _ref, _results;
-    _ref = constructor._mixin_class_record.mixins;
+    _ref = class_record.mixins;
     _results = [];
     for (key in _ref) {
       mixin_info = _ref[key];
-      _results.push((!mixins.hasOwnProperty(key) ? mixins[key] = [] : void 0, mixins[key].push(constructor)));
+      _results.push((!mixins.hasOwnProperty(key) ? mixins[key] = [] : void 0, mixins[key].push(class_record.constructor)));
     }
     return _results;
   };

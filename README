@@ -20,11 +20,13 @@ Mixin.js goes beyond Javascript's 'Object.extend' by providing:
 
   1) optional initialize and destroy methods that are called when the mixin is added or removed using Mixin.in(instance, 'MixinName') and Mixin.out(instance, 'MixinName') respectively.
 
-  2) instance data through a dual-purpose function: 'setter' Mixin.instanceData(instance, 'MixinName', SOMETHING) or 'getter' Mixin.instanceData(instance, 'MixinName')
+  2) instance data through a dual-purpose function: 'setter' Mixin.instanceData(instance, 'MixinName', SOMETHING) or 'getter' Mixin.instanceData(instance, 'MixinName'). This keeps your mixin instance data in its own 'namespace' both protecting independent mixins from naming collisions but also keeps your instance data away from the root of the object prototype isolating the implementation details of your mixin.
 
   3) dynamic mixins where you can call Mixin.in then Mixin.out and then Mixin.in again as many times as you like! Use Mixin.hasMixin(instance, 'MixinName') to check if an instance has a specific Mixin.
 
   4) easy cleanup of mixin (if required). Unmix a specific mixin or all the mixins using Mixin.out(instance, 'MixinName') or Mixin.out(instance) respectively.
+
+  5) Property clobbering checking. Before mixing in, a check is performed on existing properties to make sure they don't already exist (unless you use the 'force' option in which clobbering checks are ignored).
 
 An Example:
 **********

@@ -18,7 +18,7 @@
 this.Mixin||this.Mixin={}; this.Mixin.Core||this.Mixin.Core={}
 
 # Current version.
-Mixin.VERSION = '0.1.0'
+Mixin.VERSION = '0.1.1'
 #Mixin.DEBUG=true                         # define DEBUG before this file to enable rigorous checks
 #Mixin.UNMIX_ON_BACKBONE_DESTROY=true     # auto unmix when you get a backbone destroy message
 
@@ -32,6 +32,7 @@ Mixin.VERSION = '0.1.0'
 (_.isEmpty = (obj) -> return (obj.length==0) if (_.isArray(obj) || _.isString(obj)); return false for key, value of obj; return true) if not _.isEmpty
 (_.classOf = (obj) -> return undefined if not (obj instanceof Object); return obj.prototype.constructor.name if (obj.prototype and obj.prototype.constructor and obj.prototype.constructor.name); return obj.constructor.name if (obj.constructor and obj.constructor.name); return undefined) if not _.classOf
 (_.size = (obj) -> i=0; i++ for key of obj; return i) if not _.size
+(_.find = (obj, iter) -> (return item if iter(item)) for item in obj; return null) if not _.find
 
 ####################################################
 # Validation Helpers to check parameters and throw Errors if invalid.
@@ -152,7 +153,7 @@ class Mixin.Core._InstanceRecord
 # Stored in the constructors of the mixed in classes
 ####################################################
 class Mixin.Core._ClassRecord
-  constructor: ->
+  constructor: (@constructor) ->
     @mixins = {}
     @instance_records = []
 
@@ -284,12 +285,8 @@ class Mixin.Core._Manager
       if Mixin.DEBUG
         Mixin.Core._Validate.string(mixin_name, 'Mixin.mixin.mixout', 'mixin_name')
 
-      constructor = mix_target.constructor
-      while (constructor)
-        if constructor._mixin_class_record
-          return mix_target if constructor._mixin_class_record.destroyInstance(mix_target, mixin_name)
-        constructor = if (constructor.__super__ and (constructor.__super__.constructor!=constructor)) then constructor.__super__.constructor else undefined
-
+      if mix_target.constructor._mixin_class_records
+        (return mix_target if class_record.destroyInstance(mix_target, mixin_name)) for class_record in mix_target.constructor._mixin_class_records
       return mix_target
 
     # process one or an array
@@ -297,11 +294,8 @@ class Mixin.Core._Manager
       _doMixout(mix_target, parameter) for parameter in Array.prototype.slice.call(arguments, 1)
     # clear all mixins
     else
-      constructor = mix_target.constructor
-      while (constructor)
-        if constructor._mixin_class_record
-          return mix_target if constructor._mixin_class_record.destroyInstance(mix_target)
-        constructor = if (constructor.__super__ and (constructor.__super__.constructor!=constructor)) then constructor.__super__.constructor else undefined
+      if mix_target.constructor._mixin_class_records
+        (return mix_target if class_record.destroyInstance(mix_target)) for class_record in mix_target.constructor._mixin_class_records
     return mix_target
 
   @hasMixin: (mix_target, mixin_name, mark_as_mixed) ->
@@ -317,42 +311,54 @@ class Mixin.Core._Manager
     else
       Mixin.Core._Validate.instanceAndMixinName(mix_target, mixin_name, 'Mixin.hasMixin', 'mix_target') if Mixin.DEBUG
       return true if _Manager.hasInstanceData(mix_target, mixin_name) # shortcut
-      class_record = _Manager._findClassRecord(mix_target.constructor, mixin_name)
+      class_record = _Manager._findClassRecord(mix_target, mixin_name)
       return false if not class_record
       return class_record.instanceHasMixin(mix_target, mixin_name)
 
   @mixins: (mix_target) ->
     Mixin.Core._Validate.instance(mix_target, mixins, 'Mixin.mixins', 'mix_target') if Mixin.DEBUG
     mixins = []
-    constructor = mix_target.constructor
-    while (constructor)
-      if constructor._mixin_class_record
-        constructor._mixin_class_record.collectMixinsForInstance(mixins, mix_target)
-      constructor = if (constructor.__super__ and (constructor.__super__.constructor!=constructor)) then constructor.__super__.constructor else undefined
+    if mix_target.constructor._mixin_class_records
+      class_record.collectMixinsForInstance(mixins, mix_target) for class_record in mix_target.constructor._mixin_class_records
     return mixins
 
-  @classHasMixin: (constructor, mixin_name) ->
-    if Mixin.DEBUG
-      Mixin.Core._Validate.classConstructorAndMixinName(constructor, mixin_name, 'classHasMixin')
-    return !!_Manager._findClassRecord(constructor, mixin_name)
-
-  @_findClassRecord: (constructor, mixin_name) ->
+  @_getClassRecords: (mix_target) ->
+    class_records = []
+    constructor = mix_target.constructor
     while (constructor)
-      if constructor._mixin_class_record and constructor._mixin_class_record.classHasMixin(mixin_name)
-        return constructor._mixin_class_record
+      if constructor._mixin_class_records
+        (class_records.push(class_record) if (mix_target instanceof class_record.constructor)) for class_record in constructor._mixin_class_records
       constructor = if (constructor.__super__ and (constructor.__super__.constructor!=constructor)) then constructor.__super__.constructor else undefined
+    return class_records
+
+  @_findClassRecord: (mix_target, mixin_name) ->
+    class_records = @_getClassRecords(mix_target)
+    (return class_record if class_record.classHasMixin(mixin_name)) for class_record in class_records
     return undefined
 
   @_findOrCreateClassRecord: (mix_target, mixin_info) ->
     # look for an existing class record
-    class_record = _Manager._findClassRecord(mix_target.constructor, mixin_info.mixin_name)
+    class_record = _Manager._findClassRecord(mix_target, mixin_info.mixin_name)
     return class_record if class_record
 
-    # first class to mix in
-    if not mix_target.constructor._mixin_class_record
-      mix_target.constructor._mixin_class_record = new Mixin.Core._ClassRecord()
-      Mixin._statistics.addConstructor(mix_target.constructor) if Mixin._statistics
-    class_record = mix_target.constructor._mixin_class_record
+    # not already mixed at this level
+    class_record = _.find(mix_target.constructor._mixin_class_records, (test)-> return test.constructor==mix_target.constructor) if (mix_target.constructor._mixin_class_records)
+    if not class_record
+      class_record = new Mixin.Core._ClassRecord(mix_target.constructor)
+      if mix_target.constructor._mixin_class_records
+        was_added = false
+        # put it before its super class
+        i=0; l=mix_target.constructor._mixin_class_records.length
+        while (i<l)
+          other_class_record = mix_target.constructor._mixin_class_records[i]
+          if (mix_target instanceof other_class_record.constructor)
+            mix_target.constructor._mixin_class_records.splice(i, 0, class_record); was_added = true
+            break;
+          i++
+        mix_target.constructor._mixin_class_records.push(class_record) if not was_added
+      else
+        mix_target.constructor._mixin_class_records = [class_record]
+      Mixin._statistics.addClassRecord(class_record) if Mixin._statistics
     return class_record
 
   ####################################################
@@ -393,6 +399,5 @@ Mixin.hasMixin = Mixin.exists = Mixin.Core._Manager.hasMixin
 Mixin.mixins = Mixin.Core._Manager.mixins
 Mixin.hasInstanceData = Mixin.hasID = Mixin.Core._Manager.hasInstanceData
 Mixin.instanceData = Mixin.iD = Mixin.Core._Manager.instanceData
-Mixin.classHasMixin = Mixin.Core._Manager.classHasMixin
 
 exports.Mixin = Mixin if (typeof(exports) != 'undefined')
