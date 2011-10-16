@@ -16,6 +16,11 @@ You can get the minimal library (no standard mixins included) here:
   - Production version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.min.js
 
 ****************
+Mixin.js brings "dynamic aspect-oriented programming" to Javascript. "Dynamic" means you can add and remove independently encapsulated functionality and data to your instances on-the-fly. "Aspect-oriented" means you can flatten your class hierarchy and add/remove functionality only where & when needed.
+
+Classic object-oriented design can force you to regularly make tradeoff decisions based on your evolving subclasses like deciding between polluting common super classes  (eg. push common functionality up the hierarchy whenever it needs to be reused) vs making un-DRY code when only a subset of sub-classes require common functionality (eg. cut/paste and maintain the code). Mixin.js provides you with a light framework to avoid the decision altogether...make a mixin, use it where & when you need it...decisions made, stay made.
+
+****************
 Mixin.js goes beyond Javascript's 'Object.extend' by providing:
 
   1) optional initialize and destroy methods that are called when the mixin is added or removed using Mixin.in(instance, 'MixinName') and Mixin.out(instance, 'MixinName') respectively.
@@ -28,7 +33,10 @@ Mixin.js goes beyond Javascript's 'Object.extend' by providing:
 
   5) Property clobbering checking. Before mixing in, a check is performed on existing properties to make sure they don't already exist (unless you use the 'force' option in which clobbering checks are ignored).
 
-An Example:
+  In the most basic scenario (eg. when you don't have per-instance data that needs to be linked to an object lifecycle), Mixin reduces to a solution similar to the 'Object.extend' paradigm although it is definitely overkill in those simple situations because you first need to register the mixin and you also need to mix it into each instance of your class so you can call hasMixin(). If there is a need for class-level mixins, it can be added to Mixin.js (just let me know!), but of course, there are already more simple solutions built into the language for that like 'Object.extend'!
+
+
+Example 1:
 **********
 
   # define a new mixin for a superstar with fans
