@@ -228,7 +228,7 @@ Mixin.Core._InstanceRecord = (function() {
       throw new Error('Mixin: non-empty instance record being destroyed');
     }
     if (this.backbone_destroy_fn) {
-      this.mix_target.bind('destroy', this.backbone_destroy_fn);
+      this.mix_target.unbind('destroy', this.backbone_destroy_fn);
       this.backbone_destroy_fn = null;
     }
     return this.mix_target = null;
@@ -472,12 +472,12 @@ Mixin.Core._Manager = (function() {
   _Manager.mixout = function(mix_target, mixin_name_or_names) {
     var class_record, parameter, _doMixout, _i, _j, _len, _len2, _ref, _ref2;
     if (Mixin.DEBUG) {
-      Mixin.Core._Validate.instance(mix_target, 'Mixin.mixin', 'mix_target');
+      Mixin.Core._Validate.instance(mix_target, 'Mixin.mixout', 'mix_target');
     }
     _doMixout = __bind(function(mix_target, mixin_name) {
       var class_record, _i, _len, _ref;
       if (Mixin.DEBUG) {
-        Mixin.Core._Validate.string(mixin_name, 'Mixin.mixin.mixout', 'mixin_name');
+        Mixin.Core._Validate.string(mixin_name, 'Mixin.mixout', 'mixin_name');
       }
       if (mix_target.constructor._mixin_class_records) {
         _ref = mix_target.constructor._mixin_class_records;

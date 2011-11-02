@@ -49,7 +49,11 @@ class Mixin.AutoMemory.Property
 
   _destroyEntry: (entry) ->
     key = entry[0]; fn_ref = if (entry.length>1) then entry[1] else undefined
-    (_.keypath(@owner, key, null); return) if not fn_ref
+    if not fn_ref
+      keypath_owner = _.keypathValueOwner(@owner, key)
+      throw new Error("Mixin.AutoMemory: property '#{key}' doesn't exist on '#{_.classOf(@owner)}'") if not keypath_owner
+      keypath_owner[key] = null
+      return; 
     value = _.keypath(@owner, key)
     return if not value
     if (_.isFunction(fn_ref))

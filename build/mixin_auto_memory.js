@@ -71,11 +71,15 @@ Mixin.AutoMemory.Property = (function() {
     }
   };
   Property.prototype._destroyEntry = function(entry) {
-    var fn_ref, key, property, value, _i, _len, _ref;
+    var fn_ref, key, keypath_owner, property, value, _i, _len, _ref;
     key = entry[0];
     fn_ref = entry.length > 1 ? entry[1] : void 0;
     if (!fn_ref) {
-      _.keypath(this.owner, key, null);
+      keypath_owner = _.keypathValueOwner(this.owner, key);
+      if (!keypath_owner) {
+        throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.classOf(this.owner)) + "'");
+      }
+      keypath_owner[key] = null;
       return;
     }
     value = _.keypath(this.owner, key);

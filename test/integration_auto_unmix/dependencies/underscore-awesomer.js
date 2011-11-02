@@ -1,4 +1,4 @@
-// Underscore-Awesomer.js 1.0.0
+// Underscore-Awesomer.js 1.0.1
 // (c) 2011 Kevin Malakoff.
 // Underscore-Awesomer is freely distributable under the MIT license.
 // Underscore-Awesomer are extensions to the Underscore library: http://documentcloud.github.com/underscore
@@ -24,7 +24,7 @@
   var _ = root._;
 
   // Dude, the current version is awesome!
-  _.AWESOMENESS = '1.0.0';
+  _.AWESOMENESS = '1.0.1';
 
   // Modifications to Underscore
   // --------------------
@@ -34,105 +34,6 @@
   _.pluck = function(obj, key, remove) {
     return remove ? _.map(obj, function(value) { var val = value[key]; delete value[key]; return val; }) :
       _.map(obj, function(value){ return value[key]; });
-  };
-
-  // Internal recursive comparison function.
-  function eq(a, b, stack) {
-    // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the Harmony `egal` proposal: http://wiki.ecmascript.org/doku.php?id=harmony:egal.
-    if (a === b) return a !== 0 || 1 / a == 1 / b;
-    // A strict comparison is necessary because `null == undefined`.
-    if ((a == null) || (b == null)) return a === b;
-    // Unwrap any wrapped objects.
-    if (a._chain) a = a._wrapped;
-    if (b._chain) b = b._wrapped;
-    // Invoke a custom `isEqual` method if one is provided.
-    if (_.isFunction(a.isEqual)) return a.isEqual(b);
-    if (_.isFunction(b.isEqual)) return b.isEqual(a);
-    // Compare object types.
-    var typeA = typeof a;
-    if (typeA != typeof b) return false;
-    // Optimization; ensure that both values are truthy or falsy.
-    if (!a != !b) return false;
-    // `NaN` values are equal.
-    if (_.isNaN(a)) return _.isNaN(b);
-    // Compare string objects by value.
-    var isStringA = _.isString(a), isStringB = _.isString(b);
-    if (isStringA || isStringB) return isStringA && isStringB && String(a) == String(b);
-    // Compare number objects by value.
-    var isNumberA = _.isNumber(a), isNumberB = _.isNumber(b);
-    if (isNumberA || isNumberB) return isNumberA && isNumberB && +a == +b;
-    // Compare boolean objects by value. The value of `true` is 1; the value of `false` is 0.
-    var isBooleanA = _.isBoolean(a), isBooleanB = _.isBoolean(b);
-    if (isBooleanA || isBooleanB) return isBooleanA && isBooleanB && +a == +b;
-    // Compare dates by their millisecond values.
-    var isDateA = _.isDate(a), isDateB = _.isDate(b);
-    if (isDateA || isDateB) return isDateA && isDateB && a.getTime() == b.getTime();
-    // Compare RegExps by their source patterns and flags.
-    var isRegExpA = _.isRegExp(a), isRegExpB = _.isRegExp(b);
-    if (isRegExpA || isRegExpB) {
-      // Ensure commutative equality for RegExps.
-      return isRegExpA && isRegExpB &&
-             a.source == b.source &&
-             a.global == b.global &&
-             a.multiline == b.multiline &&
-             a.ignoreCase == b.ignoreCase;
-    }
-    // Ensure that both values are objects.
-    if (typeA != 'object') return false;
-    // Assume equality for cyclic structures. The algorithm for detecting cyclic structures is
-    // adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
-    var length = stack.length;
-    while (length--) {
-      // Linear search. Performance is inversely proportional to the number of unique nested
-      // structures.
-      if (stack[length] == a) return true;
-    }
-    // Add the first object to the stack of traversed objects.
-    stack.push(a);
-    var size = 0, result = true;
-    if (a.length === +a.length || b.length === +b.length) {
-      // Patch until solution is agreed: https://github.com/documentcloud/underscore/issues/329
-      // Reduces false positives by forcing the objects to be the same type instead of strict array-like checks
-      result = ((a instanceof b.constructor) || (b instanceof a.constructor));
-      if (result) {
-        // Compare object lengths to determine if a deep comparison is necessary.
-        size = a.length;
-        result = size == b.length;
-        if (result) {
-          // Deep compare array-like object contents, ignoring non-numeric properties.
-          while (size--) {
-            // Ensure commutative equality for sparse arrays.
-            if (!(result = size in a == size in b && eq(a[size], b[size], stack))) break;
-          }
-        }
-      }
-    } else {
-      // Deep compare objects.
-      for (var key in a) {
-        if (hasOwnProperty.call(a, key)) {
-          // Count the expected number of properties.
-          size++;
-          // Deep compare each member.
-          if (!(result = hasOwnProperty.call(b, key) && eq(a[key], b[key], stack))) break;
-        }
-      }
-      // Ensure that both objects contain the same number of properties.
-      if (result) {
-        for (key in b) {
-          if (hasOwnProperty.call(b, key) && !size--) break;
-        }
-        result = !size;
-      }
-    }
-    // Remove the first object from the stack of traversed objects.
-    stack.pop();
-    return result;
-  }
-
-  // Perform a deep comparison to check if two objects are equal.
-  _.isEqual = function(a, b) {
-    return eq(a, b, []);
   };
 
   // Collection Functions
@@ -340,14 +241,35 @@
     }
   };
 
-  // Create a duplicate of an object to any zero-indexed depth.
-  _.cloneToDepth = function(obj, depth) {
-    if (typeof obj !== 'object') return obj;
-    if (_.isUndefined(depth)) depth = 0;
-    if (depth < 1) return _.clone(obj);
-    clone = _.clone(obj);
-    for (var key in clone) {
-      clone[key] = _.cloneToDepth(clone[key], depth-1);
+  // Create a duplicate of a container of objects to any zero-indexed depth.
+  _.cloneToDepth = _.containerClone = _.clone = function(obj, depth) {
+    if (!obj || (typeof obj !== 'object')) return obj;  // by value
+    var clone;
+    if (_.isArray(obj)) clone = Array.prototype.slice.call(obj);
+    else if (obj.constructor!=={}.constructor) return obj; // by reference
+    else clone = _.extend({}, obj);
+    if (!_.isUndefined(depth) && (depth > 0)) {
+      for (var key in clone) {
+        clone[key] = _.clone(clone[key], depth-1);
+      }
+    }
+    return clone;
+  };
+
+  // Create a duplicate of all objects to any zero-indexed depth.
+  _.deepClone = function(obj, depth) {
+    if (!obj || (typeof obj !== 'object')) return obj;  // by value
+    else if (_.isString(obj)) return String.prototype.slice.call(obj);
+    else if (_.isDate(obj)) return new Date(obj.valueOf());
+    else if (_.isFunction(obj.clone)) return obj.clone();
+    var clone;
+    if (_.isArray(obj)) clone = Array.prototype.slice.call(obj);
+    else if (obj.constructor!=={}.constructor) return obj; // by reference
+    else clone = _.extend({}, obj);
+    if (!_.isUndefined(depth) && (depth > 0)) {
+      for (var key in clone) {
+        clone[key] = _.deepClone(clone[key], depth-1);
+      }
     }
     return clone;
   };
@@ -554,21 +476,23 @@
   // <br/>**Options:**<br/>
   // * `properties` - used to disambigate between owning an object and owning _.each property.<br/>
   // * `clear_values` - used to disambigate between clearing disowned items and removing them (by default, they are removed).
+  // * `remove_values` - used to indicate that the values should be disowned and removed from the collections.
   _.disown = function(obj, options) {
     if (!obj || (typeof(obj)!='object')) return obj;
     options || (options = {});
     if (_.isArray(obj)) {
-      if (options.clear_values) { _.each(obj, function(value, index) { _.disown(value); obj[index]=null; }); return obj; }
+      if (options.clear_values) { _.each(obj, function(value, index) { _.disown(value, {clear_values: options.clear_values}); obj[index]=null; }); return obj; }
       else {
-        _.each(obj, function(value) { _.disown(value); });
-        obj.length=0; return obj;
+        _.each(obj, function(value) { _.disown(value, {remove_values: options.remove_values}); });
+        if (options.remove_values) {obj.length=0;}
+        return obj;
       }
     }
     else if (options.properties) {
-      if (options.clear_values) { _.each(obj, function(value, key) { _.disown(value); obj[key]=null; }); return obj; }
+      if (options.clear_values) { _.each(obj, function(value, key) { _.disown(value, {clear_values: options.clear_values}); obj[key]=null; }); return obj; }
       else {
-        _.each(obj, function(value) { _.disown(value); });
-        for(key in obj) { delete obj[key]; }
+        _.each(obj, function(value) { _.disown(value, {remove_values: options.remove_values}); });
+        if (options.remove_values) {for(key in obj) { delete obj[key]; }}
         return obj;
       }
     }
@@ -645,6 +569,7 @@
   // <br/>**Options:**<br/>
   //* `type_field` - the default is '\_type' but you can choose any field name to trigger the search for a parseJSON function.<br/>
   //* `properties` - used to disambigate between owning a collection's items and cloning a collection.
+  //* `skip_type` - skip a type check. Useful for if your model is already deserialized and you want to deserialize your properties. See Backbone.Articulation for an example.
   // <br/>**Global settings:**<br/>
   //* `_.PARSE_JSON_TYPE_FIELD` - the field key in the serialized JSON that is used for constructor lookup.<br/>
   //* `_.PARSE_JSON_CONSTRUCTOR_ROOTS` - the array of roots that are used to find the constructor. Useful for reducing global namespace pollution<br/>
@@ -670,26 +595,37 @@
       return result;
     }
 
-    // Parse the properties individually
-    else if(options && options.properties) {
-      result = {};
-      _.each(obj, function(value, key) { result[key] = _.parseJSON(value, type_field); });
-      return result;
+    // Use the type field
+    options||(options={}); 
+    var type_field = (options.type_field) ? options.type_field : _.PARSE_JSON_TYPE_FIELD;
+    if (options.skip_type || !(obj instanceof Object) || !obj.hasOwnProperty(type_field)) {
+      // Parse the properties individually
+      if(options.properties) {
+        result = {};
+        _.each(obj, function(value, key) { result[key] = _.parseJSON(value, type_field); });
+        return result;
+      }
+      else return obj;
     }
-
-    // No deseralization available
-    var type_field = (options && options.type_field) ? options.type_field : _.PARSE_JSON_TYPE_FIELD;
-    if (!(obj instanceof Object) || !obj.hasOwnProperty(type_field)) return obj;
 
     // Find and use the parseJSON function
     var type = obj[type_field];
-    var current_root;
+    var current_root, instance;
 
-    // Try root.type Global namespace
+    // Try searching in the available namespaces
     for (var i=0, l=_.PARSE_JSON_CONSTRUCTOR_ROOTS.length; i<l;i++) {
       current_root = _.PARSE_JSON_CONSTRUCTOR_ROOTS[i];
-      parseJSON_owner = _.keypathValueOwner(current_root, type+'.parseJSON');
-      if (parseJSON_owner) return parseJSON_owner.parseJSON(obj);
+      constructor_or_root = _.keypath(current_root, type);
+      if (constructor_or_root) {
+        // class/root parse function
+        if (_.isFunction(constructor_or_root.parseJSON)) return constructor_or_root.parseJSON(obj);
+        // instance parse function (Backbone.Model and Backbone.Collection style)
+        else if (constructor_or_root.prototype && _.isFunction(constructor_or_root.prototype.parse)) {
+          instance = new constructor_or_root();
+          if (_.isFunction(instance.set)) return instance.set(instance.parse(obj));
+          else return instance.parse(obj);
+        }
+      }
     }
 
     throw new TypeError("Unable to find a parseJSON function for type: " + type);
@@ -702,7 +638,6 @@
     // Modifications to Underscore
     // --------------------
     pluck: _.pluck,
-    isEqual: _.isEqual,
 
     // Collection Functions
     // ----------------
@@ -719,6 +654,7 @@
     keypathValueOwner: _.keypathValueOwner,
     keypath: _.keypath,
     cloneToDepth: _.cloneToDepth,
+    clone: _.clone,
 
     isConstructor: _.isConstructor,
     resolveConstructor: _.resolveConstructor,

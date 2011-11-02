@@ -182,8 +182,10 @@ $(document).ready(function() {
       return instance.autoProperty('prop1', []);
     }), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoProperty'");
     instance.prop2 = new SomeProperty();
-    instance.autoProperty('prop1', 'imaginaryFunction');
-    raises(instance.destroy, Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop1' on 'AutoProperty'");
+    instance.autoProperty('prop2', 'imaginaryFunction');
+    raises((function() {
+      return instance.destroy();
+    }), Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop2' on 'AutoProperty'");
     AutoWrappedPropertyByArray = (function() {
       function AutoWrappedPropertyByArray() {
         Mixin["in"](this, 'AutoMemory');
@@ -299,8 +301,10 @@ $(document).ready(function() {
       return SomeProperty;
     })();
     instance.prop2 = new SomeProperty();
-    instance.autoWrappedProperty('prop1', 'imaginaryFunction');
-    return raises(instance.destroy, Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop1' on 'AutoWrappedProperty'");
+    instance.autoWrappedProperty('prop2', 'imaginaryFunction');
+    return raises((function() {
+      return instance.destroy();
+    }), Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop2' on 'AutoWrappedProperty'");
   });
   test("autoFunction common usage", function() {
     var AutoFunctionCommon, SomePropertyWithSpecialFunction, custom_cleanup_call_count, custom_cleanup_param1, custom_cleanup_param2, function_call_count, function_param1, function_param2, instance, instance_function_call_count, property_function_call_count, special_function_call_count, special_function_param1, special_function_param2;

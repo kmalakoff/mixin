@@ -97,7 +97,7 @@ class Mixin.Core._InstanceRecord
 
   destroy: ->
     throw new Error('Mixin: non-empty instance record being destroyed') if not _.isEmpty(@initialized_mixins)
-    (@mix_target.bind('destroy', @backbone_destroy_fn); @backbone_destroy_fn=null) if @backbone_destroy_fn
+    (@mix_target.unbind('destroy', @backbone_destroy_fn); @backbone_destroy_fn=null) if @backbone_destroy_fn
     @mix_target = null
 
   hasMixin: (mixin_name, mark_as_mixed) ->
@@ -279,11 +279,11 @@ class Mixin.Core._Manager
 
   @mixout: (mix_target, mixin_name_or_names) ->
     if Mixin.DEBUG
-      Mixin.Core._Validate.instance(mix_target, 'Mixin.mixin', 'mix_target')
+      Mixin.Core._Validate.instance(mix_target, 'Mixin.mixout', 'mix_target')
 
-    _doMixout =  (mix_target, mixin_name) =>
+    _doMixout = (mix_target, mixin_name) =>
       if Mixin.DEBUG
-        Mixin.Core._Validate.string(mixin_name, 'Mixin.mixin.mixout', 'mixin_name')
+        Mixin.Core._Validate.string(mixin_name, 'Mixin.mixout', 'mixin_name')
 
       if mix_target.constructor._mixin_class_records
         (return mix_target if class_record.destroyInstance(mix_target, mixin_name)) for class_record in mix_target.constructor._mixin_class_records

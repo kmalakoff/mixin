@@ -135,8 +135,8 @@ $(document).ready( ->
     raises((->instance.autoProperty('prop1', 43)), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoProperty'")
     raises((->instance.autoProperty('prop1', {})), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoProperty'")
     raises((->instance.autoProperty('prop1', [])), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoProperty'")
-    instance.prop2 = new SomeProperty(); instance.autoProperty('prop1', 'imaginaryFunction')
-    raises(instance.destroy, Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop1' on 'AutoProperty'")
+    instance.prop2 = new SomeProperty(); instance.autoProperty('prop2', 'imaginaryFunction')
+    raises((->instance.destroy()), Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop2' on 'AutoProperty'")
 
     class AutoWrappedPropertyByArray
       constructor: ->
@@ -221,8 +221,8 @@ $(document).ready( ->
     raises((->instance.autoWrappedProperty('prop1', {})), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoWrappedProperty'")
     raises((->instance.autoWrappedProperty('prop1', [])), Error, "Mixin.AutoMemory: unexpected function reference for property 'prop1' on 'AutoWrappedProperty'")
     class SomeProperty
-    instance.prop2 = new SomeProperty(); instance.autoWrappedProperty('prop1', 'imaginaryFunction')
-    raises(instance.destroy, Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop1' on 'AutoWrappedProperty'")
+    instance.prop2 = new SomeProperty(); instance.autoWrappedProperty('prop2', 'imaginaryFunction')
+    raises((->instance.destroy()), Error, "Mixin.AutoMemory: function 'imaginaryFunction' missing for property 'prop2' on 'AutoWrappedProperty'")
   )
 
   test("autoFunction common usage", ->
