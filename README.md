@@ -1,26 +1,30 @@
+````
         _        _           _
   /\/\ (_)__  __(_)_ __     (_)___
  /    \| |\ \/ /| | '_ \    | / __|
 / /\/\ \ | >  < | | | | |_  | \__ \
 \/    \/_|/_/\_\|_|_| |_(_)_/ |___/
                           |__/
+````
 
 Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!
 
 You can get the library with standard mixins here:
-  - Development version: https://github.com/kmalakoff/mixin/raw/master/mixin.js
-  - Production version: https://github.com/kmalakoff/mixin/raw/master/mixin.min.js
+
+* Development version: https://github.com/kmalakoff/mixin/raw/master/mixin.js
+* Production version: https://github.com/kmalakoff/mixin/raw/master/mixin.min.js
 
 You can get the minimal library (no standard mixins included) here:
-  - Development version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.js
-  - Production version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.min.js
 
-****************
+* Development version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.js
+* Production version: https://github.com/kmalakoff/mixin/raw/master/mixin_core.min.js
+
+# Introducing Mixin.js
 Mixin.js brings "dynamic aspect-oriented programming" to Javascript. "Dynamic" means you can add and remove independently encapsulated functionality and data to your instances on-the-fly. "Aspect-oriented" means you can flatten your class hierarchy and add/remove functionality only where & when needed.
 
 Classic object-oriented design can force you to regularly make tradeoff decisions based on your evolving subclasses like deciding between polluting common super classes  (eg. push common functionality up the hierarchy whenever it needs to be reused) vs making un-DRY code when only a subset of sub-classes require common functionality (eg. cut/paste and maintain the code). Mixin.js provides you with a light framework to avoid the decision altogether...make a mixin, use it where & when you need it...decisions made, stay made.
 
-****************
+# Why?
 I bet you're asking yourself what made me I write this anyways and...isn't it overkill?
 
 The problem I had was that I was implementing Backbone.Views. Some of them needed scrollable content areas (using iScroll), some of them needed to be dynamically rendered based on Backbone.Models loading and unloading whereas others needed to render collections, some of them needed to have timers to change state after a specific timeout, all of them had custom destroy methods to unbind jQuery events, some views needed to subscribe to state changes on other views, etc. My base view class was becoming a kitchen sink class and I thought, there's got to be a better way!
@@ -29,25 +33,25 @@ So I started on the path of factoring out each aspect, providing initialize and 
 
 Overkill? Try it and you can decide.
 
-****************
+# Compared to Object.extend or _.extend()
 Mixin.js goes beyond Javascript's 'Object.extend' by providing:
 
-  1) optional initialize and destroy methods that are called when the mixin is added or removed using Mixin.in(instance, 'MixinName') and Mixin.out(instance, 'MixinName') respectively.
+* optional initialize and destroy methods that are called when the mixin is added or removed using Mixin.in(instance, 'MixinName') and Mixin.out(instance, 'MixinName') respectively.
 
-  2) instance data through a dual-purpose function: 'setter' Mixin.instanceData(instance, 'MixinName', SOMETHING) or 'getter' Mixin.instanceData(instance, 'MixinName'). This keeps your mixin instance data in its own 'namespace' both protecting independent mixins from naming collisions but also keeps your instance data away from the root of the object prototype isolating the implementation details of your mixin.
+* instance data through a dual-purpose function: 'setter' Mixin.instanceData(instance, 'MixinName', SOMETHING) or 'getter' Mixin.instanceData(instance, 'MixinName'). This keeps your mixin instance data in its own 'namespace' both protecting independent mixins from naming collisions but also keeps your instance data away from the root of the object prototype isolating the implementation details of your mixin.
 
-  3) dynamic mixins where you can call Mixin.in then Mixin.out and then Mixin.in again as many times as you like! Use Mixin.hasMixin(instance, 'MixinName') to check if an instance has a specific Mixin.
+* dynamic mixins where you can call Mixin.in then Mixin.out and then Mixin.in again as many times as you like! Use Mixin.hasMixin(instance, 'MixinName') to check if an instance has a specific Mixin.
 
-  4) easy cleanup of mixin (if required). Unmix a specific mixin or all the mixins using Mixin.out(instance, 'MixinName') or Mixin.out(instance) respectively.
+* easy cleanup of mixin (if required). Unmix a specific mixin or all the mixins using Mixin.out(instance, 'MixinName') or Mixin.out(instance) respectively.
 
-  5) Property clobbering checking. Before mixing in, a check is performed on existing properties to make sure they don't already exist (unless you use the 'force' option in which clobbering checks are ignored).
+* Property clobbering checking. Before mixing in, a check is performed on existing properties to make sure they don't already exist (unless you use the 'force' option in which clobbering checks are ignored).
 
-  In the most basic scenario (eg. when you don't have per-instance data that needs to be linked to an object lifecycle), Mixin reduces to a solution similar to the 'Object.extend' paradigm although it is definitely overkill in those simple situations because you first need to register the mixin and you also need to mix it into each instance of your class so you can call hasMixin(). If there is a need for class-level mixins, it can be added to Mixin.js (just let me know!), but of course, there are already more simple solutions built into the language for that like 'Object.extend'!
+In the most basic scenario (eg. when you don't have per-instance data that needs to be linked to an object lifecycle), Mixin reduces to a solution similar to the 'Object.extend' paradigm although it is definitely overkill in those simple situations because you first need to register the mixin and you also need to mix it into each instance of your class so you can call hasMixin(). If there is a need for class-level mixins, it can be added to Mixin.js (just let me know!), but of course, there are already more simple solutions built into the language for that like 'Object.extend'!
 
 
-Example 1:
-**********
+# An Example:
 
+````
   # define a new mixin for a superstar with fans
   Mixin.registerMixin({
     mixin_name: 'Superstar'
@@ -85,40 +89,47 @@ Example 1:
 
   # cleanup after the new 'Superstar' (he doesn't do anything for himself anymore)
   Mixin.out(fan1)
-
+````
+* Note: this example demonstrates the API, but isn't indicative of the value of Mixin.js. Checkout the Subscriptions or Timeouts mixin for a more valuable usage.
 
 You can find more examples on my blog: http://braincode.tumblr.com/ or in a repository I set up specifically for examples: https://github.com/kmalakoff/examples-kmalakoff
 
-
-****************
-The library is composed of the following mixins:
-
-  1) AutoMemory - provides ways to clean up your objects when they are destroyed (for example, breaking DOM reference cycles, calling cleanup methods, etc).
-
-  2) Backbone.Events - provides a way to mixin Backbone.Events to any instance plus it provides a way to mark the native classes as having the Backbone.Events mixin.
-      -> With the Mixin.UNMIX_ON_BACKBONE_DESTROY setting enabled, it will automatically cleanup all instances with Backbone.Events when they receive a instance.trigger('destroy').
-
-  3) Backbone.LocalCollection - it just assigns the cid to the id and throw exceptions if you try to use server-related functionality.
-
-  4) Flags - provides ways to manage flags and to get a callback when they change.
-
-  5) RefCount - provides ways some basic reference counting and to get a callback when your instance is released.
-
-  6) Subscriptions - provides a way to publish subscriptions (addSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
-      -> this give a more advanced example of what is possible.
-
-  7) Timeouts - provides named timeout management and automatically cleaning them up when an instance is destroyed.
-
-***************
 Please look at the provided tests for sample code (Documentation is light at the moment!):
   - https://github.com/kmalakoff/mixin/blob/master/test
 
-****************
-The vision: I can imagine there being a community of mixin-oriented Javascript nano-libraries that can create the building blocks for more inter-operable and reusable micro-frameworks and libraries. Play with the mixins I've packaged, make some of your own (maybe refactoring some of your existing code - no matter how big or small), and share your stories!
+# Mixins bundled with Mixin.js
+The library is composed of the following mixins:
+
+## AutoMemory
+Provides ways to clean up your objects when they are destroyed (for example, breaking DOM reference cycles, calling cleanup methods, etc).
+
+## Backbone.Events
+Provides a way to mixin Backbone.Events to any instance plus it provides a way to mark the native classes as having the Backbone.Events mixin.
+      -> With the Mixin.UNMIX_ON_BACKBONE_DESTROY setting enabled, it will automatically cleanup all instances with Backbone.Events when they receive a instance.trigger('destroy').
+
+## Backbone.LocalCollection
+It just assigns the cid to the id and throw exceptions if you try to use server-related functionality.
+
+## Flags
+Provides ways to manage flags and to get a callback when they change.
+
+## RefCount
+Provides ways some basic reference counting and to get a callback when your instance is released.
+
+## Subscriptions
+Provides a way to publish subscriptions (addSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
+      -> this give a more advanced example of what is possible.
+
+## Timeouts
+Provides named timeout management and automatically cleaning them up when an instance is destroyed.
+
+
+# My Hope
+I can imagine there being a community of mixin-oriented Javascript nano-libraries that can create the building blocks for more inter-operable and reusable micro-frameworks and libraries. Play with the mixins I've packaged, make some of your own (maybe refactoring some of your existing code - no matter how big or small), and share your stories!
 
 I'll be publishing some of my mixin stories and cool examples on my blog: http://braincode.tumblr.com/
 
-****************
+# Interested in contributing?
 Current version: 0.1.0
 Target version: 1.0.0
 
