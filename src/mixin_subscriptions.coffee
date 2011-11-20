@@ -87,7 +87,7 @@ class Mixin.Subscriptions._Subscription
       subscription_link.destroy() for subscription_link in removed_subscription_links
 
   destroy: ->
-    _.remove(@subscription_links, undefined, {callback: _.disown, preclear: true})
+    _.remove(@subscription_links, undefined, {callback: ((item)-> item.destroy()), preclear: true})
 
 Mixin.Subscriptions.Observable||Mixin.Subscriptions.Observable={}
 Mixin.Subscriptions.Observable._mixin_info =
@@ -101,7 +101,7 @@ Mixin.Subscriptions.Observable._mixin_info =
     instance_data = Mixin.instanceData(this, 'Observable')
     throw new Error("Mixin.Observable.destroy: already destroyed") if instance_data.is_destroyed
     instance_data.is_destroyed = true
-    _.remove(instance_data.subscriptions, undefined, {callback: _.disown})              # clear all of the subscriptions to me
+    _.remove(instance_data.subscriptions, undefined, {callback: ((item)-> item.destroy())})              # clear all of the subscriptions to me
 
   mixin_object: {
     hasSubscription: (subscription_name) ->
@@ -234,7 +234,7 @@ Mixin.Subscriptions.Subscriber._mixin_info =
     instance_data = Mixin.instanceData(this, 'Subscriber')
     throw new Error("Mixin.Subscriber.destroy: already destroyed") if instance_data.is_destroyed
     instance_data.is_destroyed = true
-    _.remove(instance_data.subscription_backlinks, undefined, {callback: _.disown, preclear: true})     # clear all of my subscriptions to others
+    _.remove(instance_data.subscription_backlinks, undefined, {callback: ((item)-> item.destroy()), preclear: true})     # clear all of my subscriptions to others
 
   mixin_object: {
     observables: (subscription_name) ->

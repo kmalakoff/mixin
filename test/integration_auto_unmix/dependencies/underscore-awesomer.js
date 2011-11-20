@@ -1,4 +1,4 @@
-// Underscore-Awesomer.js 1.0.1
+// Underscore-Awesomer.js 1.1.0
 // (c) 2011 Kevin Malakoff.
 // Underscore-Awesomer is freely distributable under the MIT license.
 // Underscore-Awesomer are extensions to the Underscore library: http://documentcloud.github.com/underscore
@@ -24,7 +24,7 @@
   var _ = root._;
 
   // Dude, the current version is awesome!
-  _.AWESOMENESS = '1.0.1';
+  _.AWESOMENESS = '1.1.0';
 
   // Modifications to Underscore
   // --------------------
@@ -565,70 +565,70 @@
 
   // Deserialized an array of JSON objects or _.each object individually using the following conventions:
   // 1) if JSON has a recognized type identifier ('\_type' as default), it will try to create an instance.
-  // 2) if the class refered to by the type identifier has a parseJSON function, it will try to create an instance.
+  // 2) if the class refered to by the type identifier has a fromJSON function, it will try to create an instance.
   // <br/>**Options:**<br/>
-  //* `type_field` - the default is '\_type' but you can choose any field name to trigger the search for a parseJSON function.<br/>
+  //* `type_field` - the default is '\_type' but you can choose any field name to trigger the search for a fromJSON function.<br/>
   //* `properties` - used to disambigate between owning a collection's items and cloning a collection.
   //* `skip_type` - skip a type check. Useful for if your model is already deserialized and you want to deserialize your properties. See Backbone.Articulation for an example.
   // <br/>**Global settings:**<br/>
-  //* `_.PARSE_JSON_TYPE_FIELD` - the field key in the serialized JSON that is used for constructor lookup.<br/>
-  //* `_.PARSE_JSON_CONSTRUCTOR_ROOTS` - the array of roots that are used to find the constructor. Useful for reducing global namespace pollution<br/>
-  _.PARSE_JSON_TYPE_FIELD = '_type';
-  _.PARSE_JSON_CONSTRUCTOR_ROOTS = [root];
-  _.parseJSON = function(obj, options) {
-    var obj_type = typeof(obj);
+  //* `_.FROM_JSON_TYPE_FIELD` - the field key in the serialized JSON that is used for constructor lookup.<br/>
+  //* `_.FROM_JSON_CONSTRUCTOR_ROOTS` - the array of roots that are used to find the constructor. Useful for reducing global namespace pollution<br/>
+  _.FROM_JSON_TYPE_FIELD = '_type';
+  _.FROM_JSON_CONSTRUCTOR_ROOTS = [root];
+  _.fromJSON = function(json, options) {
+    var json_type = typeof(json);
 
     // Simple type - exit quickly
-    if ((obj_type!=='object') && (obj_type!=='string')) return obj;
+    if ((json_type!=='object') && (json_type!=='string')) return json;
 
     // The object is still a JSON string, convert to JSON
-    if ((obj_type==='string') && obj.length && ((obj[0] === '{')||(obj[0] === '['))) {
-      try { var obj_as_JSON = JSON.parse(obj); if (obj_as_JSON) obj = obj_as_JSON; }
-      catch (_e) {throw new TypeError("Unable to parse JSON: " + obj);}
+    if ((json_type==='string') && json.length && ((json[0] === '{')||(json[0] === '['))) {
+      try { var json_as_JSON = JSON.parse(json); if (json_as_JSON) json = json_as_JSON; }
+      catch (_e) {throw new TypeError("Unable to parse JSON: " + json);}
     }
 
     // Parse an array
     var result;
-    if (_.isArray(obj)) {
+    if (_.isArray(json)) {
       result = [];
-      _.each(obj, function(value) { result.push(_.parseJSON(value, type_field)); });
+      _.each(json, function(value) { result.push(_.fromJSON(value, type_field)); });
       return result;
     }
 
     // Use the type field
     options||(options={}); 
-    var type_field = (options.type_field) ? options.type_field : _.PARSE_JSON_TYPE_FIELD;
-    if (options.skip_type || !(obj instanceof Object) || !obj.hasOwnProperty(type_field)) {
+    var type_field = (options.type_field) ? options.type_field : _.FROM_JSON_TYPE_FIELD;
+    if (options.skip_type || !(json instanceof Object) || !json.hasOwnProperty(type_field)) {
       // Parse the properties individually
       if(options.properties) {
         result = {};
-        _.each(obj, function(value, key) { result[key] = _.parseJSON(value, type_field); });
+        _.each(json, function(value, key) { result[key] = _.fromJSON(value, type_field); });
         return result;
       }
-      else return obj;
+      else return json;
     }
 
-    // Find and use the parseJSON function
-    var type = obj[type_field];
+    // Find and use the fromJSON function
+    var type = json[type_field];
     var current_root, instance;
 
     // Try searching in the available namespaces
-    for (var i=0, l=_.PARSE_JSON_CONSTRUCTOR_ROOTS.length; i<l;i++) {
-      current_root = _.PARSE_JSON_CONSTRUCTOR_ROOTS[i];
+    for (var i=0, l=_.FROM_JSON_CONSTRUCTOR_ROOTS.length; i<l;i++) {
+      current_root = _.FROM_JSON_CONSTRUCTOR_ROOTS[i];
       constructor_or_root = _.keypath(current_root, type);
       if (constructor_or_root) {
         // class/root parse function
-        if (_.isFunction(constructor_or_root.parseJSON)) return constructor_or_root.parseJSON(obj);
+        if (_.isFunction(constructor_or_root.fromJSON)) return constructor_or_root.fromJSON(json);
         // instance parse function (Backbone.Model and Backbone.Collection style)
         else if (constructor_or_root.prototype && _.isFunction(constructor_or_root.prototype.parse)) {
           instance = new constructor_or_root();
-          if (_.isFunction(instance.set)) return instance.set(instance.parse(obj));
-          else return instance.parse(obj);
+          if (_.isFunction(instance.set)) return instance.set(instance.parse(json));
+          else return instance.parse(json);
         }
       }
     }
 
-    throw new TypeError("Unable to find a parseJSON function for type: " + type);
+    throw new TypeError("Unable to find a fromJSON function for type: " + type);
   };
 
   // Add all of the Underscore functions to the previous underscore object.
@@ -687,7 +687,7 @@
     // JSON Functions
     // -----------------
     toJSON: _.toJSON,
-    parseJSON: _.parseJSON
+    fromJSON: _.fromJSON
 
   });
 

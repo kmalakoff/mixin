@@ -133,24 +133,21 @@ Mixin.Core.Statistics = (function() {
     return _results;
   };
   Statistics.prototype.classRecordGetMixinsByInstance = function(class_record, instances) {
-    var instance_record, _i, _len, _ref, _results;
+    var instance_record, key, mixin_info, mixins, _i, _len, _ref, _ref2, _results;
     _ref = class_record.instance_records;
     _results = [];
     for (_i = 0, _len = _ref.length; _i < _len; _i++) {
       instance_record = _ref[_i];
-      _results.push((function(instance_record) {
-        var key, mixin_info, mixins, _ref2;
-        mixins = [];
-        _ref2 = instance_record.initialized_mixins;
-        for (key in _ref2) {
-          mixin_info = _ref2[key];
-          mixins.push(key);
-        }
-        return instances.push({
-          instance: instance_record.mix_target,
-          mixins: mixins
-        });
-      })(instance_record));
+      mixins = [];
+      _ref2 = instance_record.initialized_mixins;
+      for (key in _ref2) {
+        mixin_info = _ref2[key];
+        mixins.push(key);
+      }
+      _results.push(instances.push({
+        instance: instance_record.mix_target,
+        mixins: mixins
+      }));
     }
     return _results;
   };

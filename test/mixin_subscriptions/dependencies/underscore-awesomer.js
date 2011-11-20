@@ -1,4 +1,4 @@
-// Underscore-Awesomer.js 1.0.1
+// Underscore-Awesomer.js 1.2.0
 // (c) 2011 Kevin Malakoff.
 // Underscore-Awesomer is freely distributable under the MIT license.
 // Underscore-Awesomer are extensions to the Underscore library: http://documentcloud.github.com/underscore
@@ -24,7 +24,7 @@
   var _ = root._;
 
   // Dude, the current version is awesome!
-  _.AWESOMENESS = '1.0.1';
+  _.AWESOMENESS = '1.2.0';
 
   // Modifications to Underscore
   // --------------------
@@ -448,189 +448,6 @@
     return (value_a === value_b) ? _.COMPARE_EQUAL : (value_a < value_b) ? _.COMPARE_ASCENDING : _.COMPARE_DESCENDING;
   };
 
-  // Deduces the type of ownership of an item and if available, it retains it (reference counted) or clones it.
-  // <br/>**Options:**<br/>
-  // * `properties` - used to disambigate between owning an object and owning _.each property.<br/>
-  // * `share_collection` - used to disambigate between owning a collection's items (share) and cloning a collection (don't share).
-  // * `prefer_clone` - used to disambigate when both retain and clone exist. By default retain is prefered (eg. sharing for lower memory footprint).
-  _.own = function(obj, options) {
-    if (!obj || (typeof(obj)!='object')) return obj;
-    options || (options = {});
-    if (_.isArray(obj)) {
-      if (options.share_collection) { _.each(obj, function(value) { _.own(value, {prefer_clone: options.prefer_clone}); }); return obj; }
-      else { var a_clone =  []; _.each(obj, function(value) { a_clone.push(_.own(value, {prefer_clone: options.prefer_clone})); }); return a_clone; }
-    }
-    else if (options.properties) {
-      if (options.share_collection) { _.each(obj, function(value, key) { _.own(value, {prefer_clone: options.prefer_clone}); }); return obj; }
-      else { var o_clone = {}; _.each(obj, function(value, key) { o_clone[key] = _.own(value, {prefer_clone: options.prefer_clone}); }); return o_clone; }
-    }
-    else if (obj.retain) {
-      if (options.prefer_clone && obj.clone) return obj.clone();
-      else obj.retain();
-    }
-    else if (obj.clone) return obj.clone();
-    return obj;
-  };
-
-  // Deduces the type of ownership of an item and if available, it releases it (reference counted) or destroys it.
-  // <br/>**Options:**<br/>
-  // * `properties` - used to disambigate between owning an object and owning _.each property.<br/>
-  // * `clear_values` - used to disambigate between clearing disowned items and removing them (by default, they are removed).
-  // * `remove_values` - used to indicate that the values should be disowned and removed from the collections.
-  _.disown = function(obj, options) {
-    if (!obj || (typeof(obj)!='object')) return obj;
-    options || (options = {});
-    if (_.isArray(obj)) {
-      if (options.clear_values) { _.each(obj, function(value, index) { _.disown(value, {clear_values: options.clear_values}); obj[index]=null; }); return obj; }
-      else {
-        _.each(obj, function(value) { _.disown(value, {remove_values: options.remove_values}); });
-        if (options.remove_values) {obj.length=0;}
-        return obj;
-      }
-    }
-    else if (options.properties) {
-      if (options.clear_values) { _.each(obj, function(value, key) { _.disown(value, {clear_values: options.clear_values}); obj[key]=null; }); return obj; }
-      else {
-        _.each(obj, function(value) { _.disown(value, {remove_values: options.remove_values}); });
-        if (options.remove_values) {for(key in obj) { delete obj[key]; }}
-        return obj;
-      }
-    }
-    else if (obj.release) obj.release();
-    else if (obj.destroy) obj.destroy();
-    return obj;
-  };
-
-  // JSON Functions
-  // -----------------
-
-  // Convert an array of objects or an object to JSON using the convention that if an
-  // object has a toJSON function, it will use it rather than the raw object.
-  // <br/>**Options:**<br/>
-  //* `properties` - used to disambigate between owning a collection's items and cloning a collection.
-  //* `included` - can provide an array to include values or keys.
-  //* `excluded` - can provide an array to exclude values or keys.
-  _.toJSON = function(obj, options) {
-    // Simple type - exit quickly
-    if (!obj || (typeof(obj)!=='object')) return obj;
-
-    options||(options={});
-    var result;
-    if (_.isArray(obj)) {
-      if (options.included) {
-        var items;
-        if (options.excluded) items = _.difference(options.included, options.excluded);
-        else items = options.included;
-        result = {};
-        _.each(items, function(item) { if (_.contains(obj, item)) result.push(_.toJSON(item)); });
-        return result;
-      }
-      else if (options.excluded) {
-        result = [];
-        _.each(obj, function(value) { if (!_.contains(options.excluded, value)) result.push(_.toJSON(value)); });
-        return result;
-      }
-      else {
-        result = [];
-        _.each(obj, function(value) { result.push(_.toJSON(value)); });
-        return result;
-      }
-    }
-    else {
-      if(obj.toJSON) return obj.toJSON();
-      else if(options.properties) {
-        if (options.included) {
-          var keys;
-          if (options.excluded) keys = _.difference(options.included, options.excluded);
-          else keys = options.included;
-          result = {};
-          _.each(keys, function(key) { if (obj.hasOwnProperty(key)) result[key] = _.toJSON(obj[key]); });
-          return result;
-        }
-        else if (options.excluded) {
-          result = {};
-          _.each(obj, function(value, key) { if (!_.contains(options.excluded, key)) result[key] = _.toJSON(value); });
-          return result;
-        }
-        else {
-          result = {};
-          _.each(obj, function(value, key) { result[key] = _.toJSON(value); });
-          return result;
-        }
-      }
-    }
-
-    return obj;
-  };
-
-  // Deserialized an array of JSON objects or _.each object individually using the following conventions:
-  // 1) if JSON has a recognized type identifier ('\_type' as default), it will try to create an instance.
-  // 2) if the class refered to by the type identifier has a parseJSON function, it will try to create an instance.
-  // <br/>**Options:**<br/>
-  //* `type_field` - the default is '\_type' but you can choose any field name to trigger the search for a parseJSON function.<br/>
-  //* `properties` - used to disambigate between owning a collection's items and cloning a collection.
-  //* `skip_type` - skip a type check. Useful for if your model is already deserialized and you want to deserialize your properties. See Backbone.Articulation for an example.
-  // <br/>**Global settings:**<br/>
-  //* `_.PARSE_JSON_TYPE_FIELD` - the field key in the serialized JSON that is used for constructor lookup.<br/>
-  //* `_.PARSE_JSON_CONSTRUCTOR_ROOTS` - the array of roots that are used to find the constructor. Useful for reducing global namespace pollution<br/>
-  _.PARSE_JSON_TYPE_FIELD = '_type';
-  _.PARSE_JSON_CONSTRUCTOR_ROOTS = [root];
-  _.parseJSON = function(obj, options) {
-    var obj_type = typeof(obj);
-
-    // Simple type - exit quickly
-    if ((obj_type!=='object') && (obj_type!=='string')) return obj;
-
-    // The object is still a JSON string, convert to JSON
-    if ((obj_type==='string') && obj.length && ((obj[0] === '{')||(obj[0] === '['))) {
-      try { var obj_as_JSON = JSON.parse(obj); if (obj_as_JSON) obj = obj_as_JSON; }
-      catch (_e) {throw new TypeError("Unable to parse JSON: " + obj);}
-    }
-
-    // Parse an array
-    var result;
-    if (_.isArray(obj)) {
-      result = [];
-      _.each(obj, function(value) { result.push(_.parseJSON(value, type_field)); });
-      return result;
-    }
-
-    // Use the type field
-    options||(options={}); 
-    var type_field = (options.type_field) ? options.type_field : _.PARSE_JSON_TYPE_FIELD;
-    if (options.skip_type || !(obj instanceof Object) || !obj.hasOwnProperty(type_field)) {
-      // Parse the properties individually
-      if(options.properties) {
-        result = {};
-        _.each(obj, function(value, key) { result[key] = _.parseJSON(value, type_field); });
-        return result;
-      }
-      else return obj;
-    }
-
-    // Find and use the parseJSON function
-    var type = obj[type_field];
-    var current_root, instance;
-
-    // Try searching in the available namespaces
-    for (var i=0, l=_.PARSE_JSON_CONSTRUCTOR_ROOTS.length; i<l;i++) {
-      current_root = _.PARSE_JSON_CONSTRUCTOR_ROOTS[i];
-      constructor_or_root = _.keypath(current_root, type);
-      if (constructor_or_root) {
-        // class/root parse function
-        if (_.isFunction(constructor_or_root.parseJSON)) return constructor_or_root.parseJSON(obj);
-        // instance parse function (Backbone.Model and Backbone.Collection style)
-        else if (constructor_or_root.prototype && _.isFunction(constructor_or_root.prototype.parse)) {
-          instance = new constructor_or_root();
-          if (_.isFunction(instance.set)) return instance.set(instance.parse(obj));
-          else return instance.parse(obj);
-        }
-      }
-    }
-
-    throw new TypeError("Unable to find a parseJSON function for type: " + type);
-  };
-
   // Add all of the Underscore functions to the previous underscore object.
   _.mixin({
     AWESOMENESS: _.AWESOMENESS,
@@ -679,16 +496,7 @@
     COMPARE_EQUAL: _.COMPARE_EQUAL,
     COMPARE_ASCENDING: _.COMPARE_ASCENDING,
     COMPARE_DESCENDING: _.COMPARE_DESCENDING,
-    compare: _.compare,
-
-    own: _.own,
-    disown: _.disown,
-
-    // JSON Functions
-    // -----------------
-    toJSON: _.toJSON,
-    parseJSON: _.parseJSON
-
+    compare: _.compare
   });
 
 })();

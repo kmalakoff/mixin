@@ -132,7 +132,9 @@ Mixin.Subscriptions._Subscription = (function() {
   };
   _Subscription.prototype.destroy = function() {
     return _.remove(this.subscription_links, void 0, {
-      callback: _.disown,
+      callback: (function(item) {
+        return item.destroy();
+      }),
       preclear: true
     });
   };
@@ -162,7 +164,9 @@ Mixin.Subscriptions.Observable._mixin_info = {
     }
     instance_data.is_destroyed = true;
     return _.remove(instance_data.subscriptions, void 0, {
-      callback: _.disown
+      callback: (function(item) {
+        return item.destroy();
+      })
     });
   },
   mixin_object: {
@@ -356,7 +360,9 @@ Mixin.Subscriptions.Subscriber._mixin_info = {
     }
     instance_data.is_destroyed = true;
     return _.remove(instance_data.subscription_backlinks, void 0, {
-      callback: _.disown,
+      callback: (function(item) {
+        return item.destroy();
+      }),
       preclear: true
     });
   },
