@@ -162,35 +162,35 @@ $(document).ready(function() {
     }), Error, "Mixin.Observable.hasSubscription: subscription_name invalid");
     observable = new Observerable();
     raises((function() {
-      return observable.addSubscription();
-    }), Error, "Mixin.Observable.addSubscription: subscription_name missing");
+      return observable.publishSubscription();
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name missing");
     raises((function() {
-      return observable.addSubscription(0);
-    }), Error, "Mixin.Observable.addSubscription: subscription_name invalid");
+      return observable.publishSubscription(0);
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name invalid");
     raises((function() {
-      return observable.addSubscription({});
-    }), Error, "Mixin.Observable.addSubscription: subscription_name invalid");
+      return observable.publishSubscription({});
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name invalid");
     raises((function() {
-      return observable.addSubscription([]);
-    }), Error, "Mixin.Observable.addSubscription: subscription_name invalid");
+      return observable.publishSubscription([]);
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name invalid");
     raises((function() {
-      return observable.addSubscription(observable);
-    }), Error, "Mixin.Observable.addSubscription: subscription_name invalid");
+      return observable.publishSubscription(observable);
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name invalid");
     raises((function() {
-      return observable.addSubscription(Observerable);
-    }), Error, "Mixin.Observable.addSubscription: subscription_name invalid");
+      return observable.publishSubscription(Observerable);
+    }), Error, "Mixin.Observable.publishSubscription: subscription_name invalid");
     raises((function() {
-      return observable.addSubscription('Hello', 42);
-    }), Error, "Mixin.Observable.addSubscription: options invalid");
+      return observable.publishSubscription('Hello', 42);
+    }), Error, "Mixin.Observable.publishSubscription: options invalid");
     raises((function() {
-      return observable.addSubscription('Hello', []);
-    }), Error, "Mixin.Observable.addSubscription: options invalid");
+      return observable.publishSubscription('Hello', []);
+    }), Error, "Mixin.Observable.publishSubscription: options invalid");
     raises((function() {
-      return observable.addSubscription('Hello', observable);
-    }), Error, "Mixin.Observable.addSubscription: options invalid");
+      return observable.publishSubscription('Hello', observable);
+    }), Error, "Mixin.Observable.publishSubscription: options invalid");
     raises((function() {
-      return observable.addSubscription('Hello', Observerable);
-    }), Error, "Mixin.Observable.addSubscription: options invalid");
+      return observable.publishSubscription('Hello', Observerable);
+    }), Error, "Mixin.Observable.publishSubscription: options invalid");
     observable = new Observerable();
     raises((function() {
       return observable.subscribers('Hello');
@@ -239,7 +239,7 @@ $(document).ready(function() {
     raises((function() {
       return observable.addSubscriber(subscriber, ['Hello']);
     }), Error, "Mixin.Observable.subscribe: Hello does not exist for subscription_name");
-    observable.addSubscription('Hello');
+    observable.publishSubscription('Hello');
     raises((function() {
       return observable.addSubscriber(subscriber, ['Hello', (function() {})], 'Goodbye');
     }), Error, "Mixin.Observable.subscribe: Goodbye does not exist for subscription_name");
@@ -385,7 +385,7 @@ $(document).ready(function() {
     raises((function() {
       return observable.removeSubscribers(Observerable);
     }), Error, "Mixin.Observable.removeSubscribers: subscription_name invalid");
-    observable.addSubscription('Hello');
+    observable.publishSubscription('Hello');
     observable.removeSubscribers('Hello');
     raises((function() {
       return observable.removeSubscribers('Hello', 0);

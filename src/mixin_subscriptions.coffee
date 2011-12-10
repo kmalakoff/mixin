@@ -95,7 +95,7 @@ Mixin.Subscriptions.Observable._mixin_info =
 
   initialize: ->
     Mixin.instanceData(this, 'Observable', {subscriptions: {}, is_destroyed: false})
-    (@addSubscription.apply(this, if _.isArray(arg) then arg else [arg])) for arg in arguments
+    (@publishSubscription.apply(this, if _.isArray(arg) then arg else [arg])) for arg in arguments
 
   destroy: ->
     instance_data = Mixin.instanceData(this, 'Observable')
@@ -110,12 +110,12 @@ Mixin.Subscriptions.Observable._mixin_info =
       instance_data = Mixin.instanceData(this, 'Observable')
       return (instance_data.subscriptions.hasOwnProperty(subscription_name))
 
-    addSubscription: (subscription_name, subscription_type) ->
+    publishSubscription: (subscription_name, subscription_type) ->
       instance_data = Mixin.instanceData(this, 'Observable')
       subscription_type = Mixin.Subscription.TYPE.MULTIPLE if (subscription_type == undefined)
       if Mixin.DEBUG
-        Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.addSubscription', 'subscription_name')
-        Mixin.Core._Validate.noKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.addSubscription', 'subscription_name')
+        Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name')
+        Mixin.Core._Validate.noKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name')
       instance_data.subscriptions[subscription_name] = new Mixin.Subscriptions._Subscription(this, subscription_type)
       return this
 

@@ -1578,7 +1578,7 @@ Mixin.Subscriptions.Observable._mixin_info = {
     _results = [];
     for (_i = 0, _len = arguments.length; _i < _len; _i++) {
       arg = arguments[_i];
-      _results.push(this.addSubscription.apply(this, _.isArray(arg) ? arg : [arg]));
+      _results.push(this.publishSubscription.apply(this, _.isArray(arg) ? arg : [arg]));
     }
     return _results;
   },
@@ -1604,15 +1604,15 @@ Mixin.Subscriptions.Observable._mixin_info = {
       instance_data = Mixin.instanceData(this, 'Observable');
       return instance_data.subscriptions.hasOwnProperty(subscription_name);
     },
-    addSubscription: function(subscription_name, subscription_type) {
+    publishSubscription: function(subscription_name, subscription_type) {
       var instance_data;
       instance_data = Mixin.instanceData(this, 'Observable');
       if (subscription_type === void 0) {
         subscription_type = Mixin.Subscription.TYPE.MULTIPLE;
       }
       if (Mixin.DEBUG) {
-        Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.addSubscription', 'subscription_name');
-        Mixin.Core._Validate.noKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.addSubscription', 'subscription_name');
+        Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name');
+        Mixin.Core._Validate.noKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name');
       }
       instance_data.subscriptions[subscription_name] = new Mixin.Subscriptions._Subscription(this, subscription_type);
       return this;

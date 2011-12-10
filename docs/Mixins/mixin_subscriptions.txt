@@ -1,7 +1,7 @@
 Mixin.Subscriptions Docs
 ********************
 
-This mixin provides a way to publish subscriptions (addSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
+This mixin provides a way to publish subscriptions (publishSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
 
 
 TODO! for now, please study the tests in: test/mixin_subscriptions/mixin_subscriptions_tests.coffee

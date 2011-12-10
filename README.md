@@ -117,7 +117,7 @@ Provides ways to manage flags and to get a callback when they change.
 Provides ways some basic reference counting and to get a callback when your instance is released.
 
 ## Subscriptions
-Provides a way to publish subscriptions (addSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
+Provides a way to publish subscriptions (publishSubscription) and notify subscribers when they change. You can mixin: Observable, Subscriber or ObservableSubscriber.
       -> this give a more advanced example of what is possible.
 
 ## Timeouts
