@@ -124,25 +124,8 @@ Provides a way to publish subscriptions (publishSubscription) and notify subscri
 Provides named timeout management and automatically cleaning them up when an instance is destroyed.
 
 
-# My Hope
-I can imagine there being a community of mixin-oriented Javascript nano-libraries that can create the building blocks for more inter-operable and reusable micro-frameworks and libraries. Play with the mixins I've packaged, make some of your own (maybe refactoring some of your existing code - no matter how big or small), and share your stories!
 
-I'll be publishing some of my mixin stories and cool examples on my blog: http://braincode.tumblr.com/
-
-# Interested in contributing?
-Current version: 0.1.0
-Target version: 1.0.0
-
-I'm looking for volunteers to help make get Mixin to the 1.0.0 release and beyond! If you can spare some time and talent please do!
-
-If you are more designer-inclined, I'm looking for some help with branding and setting up some example pages.
-
-If you are more technical, there's documentation and tests (including for CommonJS), setting up testing for on multiple browsers (I've run the tests on the latest Chrome, Firefox, Safari, Internet Explorer, and Opera but I need an automated process), memory and performance analysis and optimizations, making the build and packaging extensible (using a yaml file?), and of course writing samples and more mixins!
-
-Or let me know if you have any other ideas for improvements and contributions!
-
-
-Enjoy!
+Enjoy and please let me know if you have any mixins that you want to share!
 
 Kevin
 xmann-intl@gmail.com
