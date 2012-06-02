@@ -1,7 +1,8 @@
 $(document).ready( ->
   module("Mixin Integration - AutoUnmix")
 
-  # import Underscore
+  # import Mixin and Underscore
+  Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin') else window.Mixin
   _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
   _ = Mixin._ unless _
 

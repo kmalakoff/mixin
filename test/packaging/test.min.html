@@ -15,12 +15,12 @@
 
   <script type="text/javascript" src="../../mixin_core.min.js"></script>
   <script type="text/javascript">Mixin.DEBUG=true;</script>
+  <script type="text/javascript">
+    window.mock_requires['mixin-js'] = window['exports']; delete window['exports']
+    window.mock_requires['mixin-js'].DEBUG=true;
+  </script>
 
   <script type="text/javascript" src="../../lib/mixin_flags.min.js"></script>
-  <script type="text/javascript">
-    window.mock_requires['Mixin'] = window.Mixin = Mixin;
-    delete window['exports'];
-  </script>
 
   <script type="text/javascript" src="../mixin_core/build/test.js"></script>
   <script type="text/javascript" src="../mixin_flags/build/test.js"></script>

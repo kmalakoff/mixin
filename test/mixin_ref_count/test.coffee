@@ -1,5 +1,9 @@
 $(document).ready( ->
   module("Mixin.RefCount")
+
+  # import Mixin
+  Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin') else window.Mixin
+
   test("TEST DEPENDENCY MISSING", ->
     ok(!!Mixin); ok(!!Mixin.RefCount)
   )

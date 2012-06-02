@@ -2,7 +2,9 @@
 (function() {
 
   $(document).ready(function() {
+    var Mixin;
     module("Mixin.RefCount");
+    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin') : window.Mixin;
     test("TEST DEPENDENCY MISSING", function() {
       ok(!!Mixin);
       return ok(!!Mixin.RefCount);

@@ -4,8 +4,9 @@
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
   $(document).ready(function() {
-    var _;
+    var Mixin, _;
     module("Mixin");
+    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin') : window.Mixin;
     _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
     if (!_) {
       _ = Mixin._;

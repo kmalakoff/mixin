@@ -2,8 +2,9 @@
 (function() {
 
   $(document).ready(function() {
-    var _;
+    var Mixin, _;
     module("Mixin.Subscriptions");
+    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin') : window.Mixin;
     _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
     if (!_) {
       _ = Mixin._;
