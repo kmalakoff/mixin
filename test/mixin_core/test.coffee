@@ -1,7 +1,13 @@
 $(document).ready( ->
   module("Mixin")
+
+  # import Underscore
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
+  _ = Mixin._ unless _
+
   test("TEST DEPENDENCY MISSING", ->
-    Mixin.Mixin
+    ok(!!Mixin)
+    ok(!!_)
   )
 
   test("Mixin availability and basic scenario", ->

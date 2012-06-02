@@ -1,0 +1,4 @@
+# osx noise
+.DS_Store
+
+node_modules/*

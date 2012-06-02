@@ -1,7 +1,0 @@
-Mixin.RefCount Docs
-********************
-
-This mixin provides ways some basic reference counting and to get a callback when your instance is released.
-
-
-TODO! for now, please study the tests in: test/mixin_ref_count/mixin_ref_count_tests.coffee

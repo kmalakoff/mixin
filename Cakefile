@@ -1,0 +1,1 @@
+require('easy-bake')('easy-bake-config.yaml')

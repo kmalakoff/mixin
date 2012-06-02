@@ -1,7 +1,7 @@
 $(document).ready( ->
   module("Mixin.RefCount")
   test("TEST DEPENDENCY MISSING", ->
-    Mixin.RefCount.RefCount
+    ok(!!Mixin); ok(!!Mixin.RefCount)
   )
 
   test("Use case: adding ref counting to a class", ->

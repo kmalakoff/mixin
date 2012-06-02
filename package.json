@@ -1,12 +1,24 @@
 {
-  "name"          : "mixin",
-  "description"   : "Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!",
-  "homepage"      : "https://github.com/kmalakoff/mixin",
-  "keywords"      : ["util", "functional", "server", "client", "browser"],
-  "author"        : "Kevin Malakoff <xmann.intl@gmail.com>",
-  "contributors"  : [],
-  "dependencies"  : [],
-  "repository"    : {"type": "git", "url": "git://github.com/kmalakoff/mixin.git"},
-  "main"          : "mixin.js",
-  "version"       : "0.1.1"
+  "author": "Kevin Malakoff <https://github.com/kmalakoff>",
+  "name": "mixin",
+  "description": "Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!",
+  "keywords"      : ["mixin", "javascript", "coffeescript"],
+
+  "url": "http://kmalakoff.github.com/mixin/",
+  "homepage": "http://kmalakoff.github.com/mixin/",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/kmalakoff/mixin.git"
+  },
+
+  "scripts": {
+    "test": "cake -c test"
+  },
+  "devDependencies": {
+    "easy-bake": ">=0.1.0"
+  },
+
+  "lib" : ".",
+  "main" : "mixin.js",
+  "version": "0.1.2"
 }

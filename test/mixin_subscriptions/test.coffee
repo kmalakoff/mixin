@@ -1,8 +1,13 @@
 $(document).ready( ->
   module("Mixin.Subscriptions")
+
+  # import Underscore
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
+  _ = Mixin._ unless _
+
   test("TEST DEPENDENCY MISSING", ->
-    _.VERSION; _.AWESOMENESS.Underscore_Awesome
-    Mixin.Subscriptions.Subscriptions
+    ok(!!Mixin); ok(!!Mixin.Subscriptions)
+    ok(!!_)
   )
 
   test("Use case: reasonably complex scenario", ->

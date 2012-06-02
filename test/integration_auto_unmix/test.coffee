@@ -1,8 +1,13 @@
 $(document).ready( ->
   module("Mixin Integration - AutoUnmix")
+
+  # import Underscore
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
+  _ = Mixin._ unless _
+
   test("TEST DEPENDENCY MISSING", ->
-    _.VERSION; _.AWESOMENESS.Underscore_Awesome; Backbone.Backbone
-    Mixin.RefCount.RefCount; Mixin.AutoMemory.AutoMemory; Mixin.Timeouts.Timeouts; Mixin.Backbone.Events.Events
+    ok(!!Mixin); ok(!!Mixin.RefCount); ok(!!Mixin.AutoMemory); ok(!!Mixin.Timeouts)
+    ok(!!_)
   )
 
   test("Use case: reference counting with Mixin.out on destroy", ->
@@ -65,35 +70,5 @@ $(document).ready( ->
 
       start()
     ), 101)
-  )
-  test("Use case: Backbone.Event 'destroy'", ->
-    Mixin.UNMIX_ON_BACKBONE_DESTROY=true
-
-    class SelfDestructructive
-      constructor: ->
-        Mixin.in(this, 'Backbone.Events', 'AutoMemory', 'Timeouts')
-        @addTimeout('Waiting for Godot', (=>), 1000000000)
-        @give_this_to_godot = 'time insenstive information'; @autoProperty('give_this_to_godot')
-
-    character1 = new SelfDestructructive()
-    character2 = new SelfDestructructive()
-
-    ok(character1.give_this_to_godot!=null, 'something to share')
-    ok(character2.give_this_to_godot!=null, 'something to share')
-    deepEqual(character1.timeouts(), ['Waiting for Godot'], 'Waiting for Godot')
-    deepEqual(character2.timeouts(), ['Waiting for Godot'], 'Waiting for Godot')
-
-    character1.trigger('destroy')
-    ok(character1.give_this_to_godot==null, 'it was a dream')
-    ok(character2.give_this_to_godot!=null, 'something to share')
-
-    character2.trigger('destroy')
-    ok(character2.give_this_to_godot==null, 'it was...')
-
-    # the end
-    Mixin._statistics.update()
-    equal(Mixin._statistics.byInstance_withData().length, 0, '0 instances with data')
-    equal(Mixin._statistics.byInstance_getMixins().length, 0, '0 instances')
-    equal(_.size(Mixin._statistics.byMixin_getInstances()), 0, '0 live mixins')
   )
 )

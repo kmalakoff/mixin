@@ -1,7 +1,0 @@
-Mixin.Timeouts Docs
-********************
-
-This mixin provides named timeout management and automatically cleaning them up when an instance is destroyed.
-
-
-TODO! for now, please study the tests in: test/mixin_timeouts/mixin_timeouts_tests.coffee

@@ -1,0 +1,38 @@
+library_core:
+  join: mixin_core.js
+  minimize: true
+  files:
+    - src/mixin_core.coffee
+    - src/mixin_core_statistics.coffee
+
+library:
+  join: mixin.js
+  minimize: true
+  files:
+    - src/mixin_core.coffee
+    - src/mixin_core_statistics.coffee
+    - src/lib/**.*coffee
+
+library_individual_mixins:
+  output: lib
+  minimize: true
+  directories:
+    - src/lib
+
+tests:
+  output: ./build
+  directories:
+    - test/integration_auto_unmix
+    - test/mixin_auto_memory
+    - test/mixin_core
+    - test/mixin_flags
+    - test/mixin_ref_count
+    - test/mixin_subscriptions
+    - test/mixin_timeouts
+    - test/packaging
+  options:
+    test:
+      timeout: 60000
+      runner: phantomjs-qunit-runner.js
+    build:
+      no_files_ok: ['test/packaging']

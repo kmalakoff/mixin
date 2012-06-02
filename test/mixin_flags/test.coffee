@@ -1,7 +1,7 @@
 $(document).ready( ->
   module("Mixin.Flags")
   test("TEST DEPENDENCY MISSING", ->
-    Mixin.Flags
+    ok(!!Mixin); ok(!!Mixin.Flags)
   )
 
   test("Use case: no initialization flags and basic usage", ->

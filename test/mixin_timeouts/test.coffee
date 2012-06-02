@@ -1,7 +1,7 @@
 $(document).ready( ->
   module("Mixin.Timeouts")
   test("TEST DEPENDENCY MISSING", ->
-    Mixin.Timeouts.Timeouts
+    ok(!!Mixin); ok(!!Mixin.Timeouts)
   )
 
   test("Use case: setup errors", ->

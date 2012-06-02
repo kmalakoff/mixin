@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/kmalakoff/mixin.png)](http://travis-ci.org/kmalakoff/mixin)
+
 ````
         _        _           _
   /\/\ (_)__  __(_)_ __     (_)___
@@ -103,13 +105,6 @@ The library is composed of the following mixins:
 ## AutoMemory
 Provides ways to clean up your objects when they are destroyed (for example, breaking DOM reference cycles, calling cleanup methods, etc).
 
-## Backbone.Events
-Provides a way to mixin Backbone.Events to any instance plus it provides a way to mark the native classes as having the Backbone.Events mixin.
-      -> With the Mixin.UNMIX_ON_BACKBONE_DESTROY setting enabled, it will automatically cleanup all instances with Backbone.Events when they receive a instance.trigger('destroy').
-
-## Backbone.LocalCollection
-It just assigns the cid to the id and throw exceptions if you try to use server-related functionality.
-
 ## Flags
 Provides ways to manage flags and to get a callback when they change.
 
@@ -124,25 +119,24 @@ Provides a way to publish subscriptions (publishSubscription) and notify subscri
 Provides named timeout management and automatically cleaning them up when an instance is destroyed.
 
 
-# My Hope
-I can imagine there being a community of mixin-oriented Javascript nano-libraries that can create the building blocks for more inter-operable and reusable micro-frameworks and libraries. Play with the mixins I've packaged, make some of your own (maybe refactoring some of your existing code - no matter how big or small), and share your stories!
+Building the library
+-----------------------
 
-I'll be publishing some of my mixin stories and cool examples on my blog: http://braincode.tumblr.com/
+###Installing:
 
-# Interested in contributing?
-Current version: 0.1.0
-Target version: 1.0.0
+1. install node.js: http://nodejs.org
+2. install node packages: (sudo) 'npm install'
 
-I'm looking for volunteers to help make get Mixin to the 1.0.0 release and beyond! If you can spare some time and talent please do!
+###Commands:
 
-If you are more designer-inclined, I'm looking for some help with branding and setting up some example pages.
+1. 'cake clean' - cleans the project of all compiled files
+2. 'cake build' - performs a single build
+3. 'cake watch' - automatically scans for and builds the project when changes are detected
+4. 'cake test' - cleans, builds, and runs tests. Note: the tests require installing phantomjs: ('brew install phantomjs' or http://phantomjs.org/)
 
-If you are more technical, there's documentation and tests (including for CommonJS), setting up testing for on multiple browsers (I've run the tests on the latest Chrome, Firefox, Safari, Internet Explorer, and Opera but I need an automated process), memory and performance analysis and optimizations, making the build and packaging extensible (using a yaml file?), and of course writing samples and more mixins!
+Options:
 
-Or let me know if you have any other ideas for improvements and contributions!
-
-
-Enjoy!
-
-Kevin
-xmann-intl@gmail.com
+1. '-c' or '--clean'  - cleans the project before running a new command
+2. '-w' or '--watch'  - watches for changes
+3. '-s' or '--silent' - does not output messages to the console (unless errors occur)
+4. '-p' or '--preview' - preview the action

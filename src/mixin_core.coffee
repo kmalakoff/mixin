@@ -5,7 +5,6 @@
   See the following for full license details:
     https://github.com/kmalakoff/mixin/blob/master/LICENSE
   Dependencies: None.
-    - Dependencies with Mixin.UNMIX_ON_BACKBONE_DESTROY enabled: Underscore.js, Backbone.js
 
   Note: some code from Underscore.js is embedded in this file
   to remove dependencies on the full library. Please see the following for details
@@ -14,25 +13,32 @@
     https://github.com/documentcloud/underscore/blob/master/LICENSE
 ###
 
-# define namspaces
-this.Mixin||this.Mixin={}; this.Mixin.Core||this.Mixin.Core={}
+# export or create Knockback namespace and kb alias
+Mixin = @Mixin = if (typeof(exports) != 'undefined') then exports else {}
+Mixin.Core||Mixin.Core={}
 
 # Current version.
-Mixin.VERSION = '0.1.1'
+Mixin.VERSION = '0.1.2'
 #Mixin.DEBUG=true                         # define DEBUG before this file to enable rigorous checks
-#Mixin.UNMIX_ON_BACKBONE_DESTROY=true     # auto unmix when you get a backbone destroy message
 
 ####################################################
 # Remove dependency on underscore, but inline minimally needed
 ####################################################
-(_||_={})
-(_.isArray = (obj) -> return Object.prototype.toString.call(obj) == '[object Array]') if not _.isArray
-(_.isString = (obj) -> return !!(obj == '' || (obj && obj.charCodeAt && obj.substr))) if not _.isString
-(_.isFunction = (obj) -> return !!(obj && obj.constructor && obj.call && obj.apply)) if not _.isFunction
-(_.isEmpty = (obj) -> return (obj.length==0) if (_.isArray(obj) || _.isString(obj)); return false for key, value of obj; return true) if not _.isEmpty
-(_.classOf = (obj) -> return undefined if not (obj instanceof Object); return obj.prototype.constructor.name if (obj.prototype and obj.prototype.constructor and obj.prototype.constructor.name); return obj.constructor.name if (obj.constructor and obj.constructor.name); return undefined) if not _.classOf
-(_.size = (obj) -> i=0; i++ for key of obj; return i) if not _.size
-(_.find = (obj, iter) -> (return item if iter(item)) for item in obj; return null) if not _.find
+# import Underscore
+_ = if not @_ and (typeof(require) != 'undefined') then require('underscore') else @_
+_ = {} unless _
+Mixin._ = _   # publish if needed and not including the full underscore library
+(_.isArray = (obj) -> return Object.prototype.toString.call(obj) == '[object Array]') unless _.isArray
+(_.isString = (obj) -> return !!(obj == '' || (obj && obj.charCodeAt && obj.substr))) unless _.isString
+(_.isFunction = (obj) -> return !!(obj && obj.constructor && obj.call && obj.apply)) unless _.isFunction
+(_.isEmpty = (obj) -> return (obj.length==0) if (_.isArray(obj) || _.isString(obj)); return false for key, value of obj; return true) unless _.isEmpty
+(_.classOf = (obj) -> return undefined if not (obj instanceof Object); return obj.prototype.constructor.name if (obj.prototype and obj.prototype.constructor and obj.prototype.constructor.name); return obj.constructor.name if (obj.constructor and obj.constructor.name); return undefined) unless _.classOf
+(_.size = (obj) -> i=0; i++ for key of obj; return i) unless _.size
+(_.find = (obj, iter) -> (return item if iter(item)) for item in obj; return null) unless _.find
+(_.remove = (array, item) -> index = array.indexOf(item); return if index<0; array.splice(index, 1); return item) unless _.remove
+(_.keypathValueOwner = (object, keypath) -> (components = if _.isString(keypath) then keypath.split('.') else keypath); ((if(i==components.length-1) then (if object.hasOwnProperty(key) then return object else return) else (return unless object.hasOwnProperty(key); object = object[key])) for key, i in components); return) unless _.keypathValueOwner
+(_.keypathExists = (object, keypath) -> return !!_.keypathValueOwner(object, keypath)) unless _.keypathExists
+(_.keypath = (object, keypath, value) -> components = keypath.split('.'); object = _.keypathValueOwner(object, components); return unless object; if(arguments.length==3) then (object[components[components.length-1]] = value; return value) else return object[components[components.length-1]]) unless _.keypath
 
 ####################################################
 # Validation Helpers to check parameters and throw Errors if invalid.
@@ -97,18 +103,12 @@ class Mixin.Core._InstanceRecord
 
   destroy: ->
     throw new Error('Mixin: non-empty instance record being destroyed') if not _.isEmpty(@initialized_mixins)
-    (@mix_target.unbind('destroy', @backbone_destroy_fn); @backbone_destroy_fn=null) if @backbone_destroy_fn
     @mix_target = null
 
   hasMixin: (mixin_name, mark_as_mixed) ->
     has_mixin = @initialized_mixins.hasOwnProperty(mixin_name)
     return has_mixin if has_mixin or not mark_as_mixed
     @initialized_mixins[mixin_name] = {is_destroyed: false}
-
-    # Backbone.Events-based auto destroy
-    if Mixin.UNMIX_ON_BACKBONE_DESTROY and (mixin_info.mixin_name=='Backbone.Events') and not @backbone_destroy_fn
-      @backbone_destroy_fn = @_bindBackboneDestroyFn(@mix_target)
-      @mix_target.bind('destroy', @backbone_destroy_fn)
 
     return true
 
@@ -118,11 +118,6 @@ class Mixin.Core._InstanceRecord
     # initialize
     @initialized_mixins[mixin_info.mixin_name] = {is_destroyed: false, destroy: mixin_info.destroy}
     mixin_info.initialize.apply(@mix_target, args) if mixin_info.initialize
-
-    # Backbone.Events-based auto destroy
-    if Mixin.UNMIX_ON_BACKBONE_DESTROY and (mixin_info.mixin_name=='Backbone.Events') and not @backbone_destroy_fn
-      @backbone_destroy_fn = @_bindBackboneDestroyFn(@mix_target)
-      @mix_target.bind('destroy', @backbone_destroy_fn)
 
   destroyMixin: (mixin_name) ->
     if mixin_name
@@ -145,9 +140,6 @@ class Mixin.Core._InstanceRecord
     Mixin.Core._Manager._destroyInstanceData(@mix_target, mixin_name)
     delete @initialized_mixins[mixin_name]
     return true
-
-  # closured
-  _bindBackboneDestroyFn: (mix_target) -> return => Mixin.out(mix_target)
 
 ####################################################
 # Stored in the constructors of the mixed in classes

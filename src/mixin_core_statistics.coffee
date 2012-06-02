@@ -7,8 +7,8 @@
   Dependencies: Mixin.Core
 ###
 
+# import Mixin and Underscore
 this.Mixin = require('mixin_core').Mixin if not Mixin and (typeof(exports) != 'undefined')
-throw new Error("Mixin.Core.Statistics: Dependency alert! Mixin is missing. Please ensure it is included") if not Mixin
 
 # statistics by default - they just store the constructors in an array
 this.Mixin.STATISTICS=true if (this.Mixin.STATISTICS==undefined)
