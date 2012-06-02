@@ -12,9 +12,11 @@
   },
 
   "scripts": {
-    "test": "cake -c test"
+    "test": "node_modules/.bin/cake -c test"
   },
   "devDependencies": {
+    "coffee-script": ">=1.3.3",
+    "uglify-js": ">=1.3.0",
     "easy-bake": ">=0.1.0"
   },
 

@@ -1,0 +1,12 @@
+# osx noise
+.DS_Store
+
+node_modules/*
+
+test/integration_auto_unmix/build/*
+test/test/mixin_auto_memory/build/*
+test/test/mixin_core/build/*
+test/test/mixin_flags/build/*
+test/test/mixin_ref_count/build/*
+test/test/mixin_subscriptions/build/*
+test/test/mixin_timeouts/build/*
