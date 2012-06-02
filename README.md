@@ -135,6 +135,9 @@ Building the library
 4. 'cake test' - cleans, builds, and runs tests. Note: the tests require installing phantomjs: ('brew install phantomjs' or http://phantomjs.org/)
 
 Options:
+=======
+
+Enjoy and please let me know if you have any mixins that you want to share!
 
 1. '-c' or '--clean'  - cleans the project before running a new command
 2. '-w' or '--watch'  - watches for changes
