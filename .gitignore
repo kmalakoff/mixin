@@ -4,6 +4,7 @@
 node_modules/*
 
 test/integration_auto_unmix/build/*
+test/_examples/build/*
 test/test/mixin_auto_memory/build/*
 test/test/mixin_core/build/*
 test/test/mixin_flags/build/*
