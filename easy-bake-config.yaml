@@ -32,7 +32,7 @@ tests:
     - test/packaging
   options:
     test:
-      timeout: 60000
+      command: phantomjs
       runner: phantomjs-qunit-runner.js
     build:
       no_files_ok: ['test/packaging']
