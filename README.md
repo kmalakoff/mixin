@@ -119,7 +119,7 @@ Provides a way to publish subscriptions (publishSubscription) and notify subscri
 Provides named timeout management and automatically cleaning them up when an instance is destroyed.
 
 
-Building the library
+Building, Running and Testing the library
 -----------------------
 
 ###Installing:
@@ -129,17 +129,4 @@ Building the library
 
 ###Commands:
 
-1. 'cake clean' - cleans the project of all compiled files
-2. 'cake build' - performs a single build
-3. 'cake watch' - automatically scans for and builds the project when changes are detected
-4. 'cake test' - cleans, builds, and runs tests. Note: the tests require installing phantomjs: ('brew install phantomjs' or http://phantomjs.org/)
-
-Options:
-=======
-
-Enjoy and please let me know if you have any mixins that you want to share!
-
-1. '-c' or '--clean'  - cleans the project before running a new command
-2. '-w' or '--watch'  - watches for changes
-3. '-s' or '--silent' - does not output messages to the console (unless errors occur)
-4. '-p' or '--preview' - preview the action
+Look at: https://github.com/kmalakoff/easy-bake

@@ -1,13 +1,13 @@
 library_core:
   join: mixin_core.js
-  minimize: true
+  compress: true
   files:
     - src/mixin_core.coffee
     - src/mixin_core_statistics.coffee
 
 library:
   join: mixin.js
-  minimize: true
+  compress: true
   files:
     - src/mixin_core.coffee
     - src/mixin_core_statistics.coffee
@@ -15,7 +15,7 @@ library:
 
 library_individual_mixins:
   output: lib
-  minimize: true
+  compress: true
   directories:
     - src/lib
 
