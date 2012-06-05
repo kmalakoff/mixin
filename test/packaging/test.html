@@ -12,8 +12,7 @@
     window.require = function(path) { return window.mock_requires[path]; };
     window.exports = {};
   </script>
-
-  <script type="text/javascript" src="../../mixin_core.js"></script>
+  <script type="text/javascript" src="../../mixin-js-core.js"></script>
   <script type="text/javascript">
     window.mock_requires['mixin-js'] = window['exports']; delete window['exports']
     window.mock_requires['mixin-js'].DEBUG=true;
@@ -22,7 +21,7 @@
   <script type="text/javascript" src="../../lib/mixin_flags.js"></script>
 
 
-  <script type="text/javascript" src="../mixin_core/build/test.js"></script>
+  <script type="text/javascript" src="../mixin-js-core/build/test.js"></script>
   <script type="text/javascript" src="../mixin_flags/build/test.js"></script>
 </head>
 <body>

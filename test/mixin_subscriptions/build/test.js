@@ -4,7 +4,7 @@
   $(document).ready(function() {
     var Mixin, _;
     module("Mixin.Subscriptions");
-    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin') : window.Mixin;
+    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js') : window.Mixin;
     _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
     if (!_) {
       _ = Mixin._;

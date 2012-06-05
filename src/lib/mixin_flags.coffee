@@ -8,7 +8,7 @@
 ###
 
 # import Mixin and Underscore
-this.Mixin = require('mixin_core').Mixin if not Mixin and (typeof(exports) != 'undefined')
+this.Mixin = require('mixin-js-core').Mixin if not Mixin and (typeof(exports) != 'undefined')
 
 Mixin.Flags||Mixin.Flags={}
 

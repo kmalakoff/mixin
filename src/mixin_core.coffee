@@ -1,5 +1,5 @@
 ###
-  mixin.js 0.1.0
+  mixin-js.js 0.1.3
   (c) 2011 Kevin Malakoff.
   Mixin is freely distributable under the MIT license.
   See the following for full license details:
@@ -18,7 +18,7 @@ Mixin = @Mixin = if (typeof(exports) != 'undefined') then exports else {}
 Mixin.Core||Mixin.Core={}
 
 # Current version.
-Mixin.VERSION = '0.1.2'
+Mixin.VERSION = '0.1.3'
 #Mixin.DEBUG=true                         # define DEBUG before this file to enable rigorous checks
 
 ####################################################

@@ -4,7 +4,7 @@
   $(document).ready(function() {
     var Mixin;
     module("Mixin.Timeouts");
-    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin') : window.Mixin;
+    Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js') : window.Mixin;
     test("TEST DEPENDENCY MISSING", function() {
       ok(!!Mixin);
       return ok(!!Mixin.Timeouts);

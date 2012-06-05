@@ -1,12 +1,12 @@
 library_core:
-  join: mixin_core.js
+  join: mixin-js-core.js
   compress: true
   files:
     - src/mixin_core.coffee
     - src/mixin_core_statistics.coffee
 
 library:
-  join: mixin.js
+  join: mixin-js.js
   compress: true
   files:
     - src/mixin_core.coffee

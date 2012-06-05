@@ -1,5 +1,5 @@
 ###
-  mixin_core_statistics.js
+  mixin-js-core_statistics.js
   (c) 2011 Kevin Malakoff.
   Mixin.Core.Statistics is freely distributable under the MIT license.
   See the following for full license details:
@@ -8,7 +8,7 @@
 ###
 
 # import Mixin and Underscore
-this.Mixin = require('mixin_core').Mixin if not Mixin and (typeof(exports) != 'undefined')
+this.Mixin = require('mixin-js-core').Mixin if not Mixin and (typeof(exports) != 'undefined')
 
 # statistics by default - they just store the constructors in an array
 this.Mixin.STATISTICS=true if (this.Mixin.STATISTICS==undefined)
