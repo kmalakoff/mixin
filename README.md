@@ -11,15 +11,20 @@
 
 Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!
 
-You can get the library with standard mixins here:
+You can get the library here:
 
-* Development version: https://github.com/kmalakoff/mixin/raw/master/mixin-js.js
-* Production version: https://github.com/kmalakoff/mixin/raw/master/mixin.min.js
+* [Development version][1]
+* [Production version][2]
 
 You can get the minimal library (no standard mixins included) here:
 
-* Development version: https://github.com/kmalakoff/mixin/raw/master/mixin-js-core.js
-* Production version: https://github.com/kmalakoff/mixin/raw/master/mixin-js-core.min.js
+* [Development version][3]
+* [Production version][4]
+
+[1]: https://raw.github.com/kmalakoff/mixin/0.1.3/mixin-js.js
+[2]: https://raw.github.com/kmalakoff/mixin/0.1.3/mixin-js.min.js
+[3]: https://raw.github.com/kmalakoff/mixin/0.1.3/mixin-js-core.js
+[4]: https://raw.github.com/kmalakoff/mixin/0.1.3/mixin-js-core.min.js
 
 # Introducing Mixin.js
 Mixin.js brings "dynamic aspect-oriented programming" to Javascript. "Dynamic" means you can add and remove independently encapsulated functionality and data to your instances on-the-fly. "Aspect-oriented" means you can flatten your class hierarchy and add/remove functionality only where & when needed.
