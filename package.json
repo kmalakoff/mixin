@@ -1,6 +1,6 @@
 {
   "author"        : "Kevin Malakoff <https://github.com/kmalakoff>",
-  "name"          : "mixin-js",
+  "name"          : "mixin",
   "description"   : "Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!",
   "keywords"      : ["mixin-js", "mixinjs", "mixin", "javascript", "coffeescript"],
 
