@@ -1,0 +1,43 @@
+library_core:
+  join: mixin-js-core.js
+  compress: true
+  files:
+    - src/mixin-core.coffee
+    - src/mixin-core-statistics.coffee
+
+library:
+  join: mixin-js.js
+  compress: true
+  files:
+    - src/mixin-core.coffee
+    - src/mixin-core-statistics.coffee
+    - src/lib/**.*coffee
+
+library_individual_mixins:
+  output: lib
+  compress: true
+  directories:
+    - src/lib
+
+tests:
+  output: ./build
+  directories:
+    - test/core
+    - test/integration-auto-unmix
+    - test/mixin-auto-memory
+    - test/mixin-flags
+    - test/mixin-ref-count
+    - test/mixin-subscriptions
+    - test/mixin-timeouts
+    - test/packaging
+  options:
+    test:
+      command: phantomjs
+      runner: phantomjs-qunit-runner.js
+    build:
+      no_files_ok: ['test/packaging']
+
+postinstall:
+  copy_latest_underscore_for_subscriptions:
+    command: 'cp'
+    args: ['node_modules/underscore/underscore.js', 'test/mixin-subscriptions/vendor/underscore-latest.js']

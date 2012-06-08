@@ -9,7 +9,7 @@
                           |__/
 ````
 
-Mixin.js is the 'reuse more' Javascript nano-framework. Stay DRY...mixin!
+Mixin.js is the 'reuse more', aspect-oriented Javascript nano-framework. Stay DRY...mixin!
 
 You can get the library here:
 
@@ -130,7 +130,7 @@ Building, Running and Testing the library
 ###Installing:
 
 1. install node.js: http://nodejs.org
-2. install node packages: (sudo) 'npm install'
+2. install node packages: 'npm install'
 
 ###Commands:
 

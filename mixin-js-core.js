@@ -2,7 +2,7 @@
 
 /*
   mixin-js.js 0.1.3
-  (c) 2011 Kevin Malakoff.
+  (c) 2011, 2012 Kevin Malakoff.
   Mixin is freely distributable under the MIT license.
   See the following for full license details:
     https://github.com/kmalakoff/mixin/blob/master/LICENSE
@@ -17,7 +17,7 @@
 
 
 (function() {
-  var Mixin, _,
+  var Mixin, _, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -27,7 +27,7 @@
 
   Mixin.VERSION = '0.1.3';
 
-  _ = !this._ && (typeof require !== 'undefined') ? require('underscore') : this._;
+  _ = !this._ && (typeof require !== 'undefined') ? (_ref = require('underscore')) != null ? _ref._ : void 0 : this._;
 
   if (!_) {
     _ = {};
@@ -118,6 +118,12 @@
     };
   }
 
+  if (!_.keypathExists) {
+    _.keypathExists = function(object, keypath) {
+      return !!_.keypathValueOwner(object, keypath);
+    };
+  }
+
   if (!_.keypathValueOwner) {
     _.keypathValueOwner = function(object, keypath) {
       var components, i, key, _i, _len;
@@ -137,12 +143,6 @@
           object = object[key];
         }
       }
-    };
-  }
-
-  if (!_.keypathExists) {
-    _.keypathExists = function(object, keypath) {
-      return !!_.keypathValueOwner(object, keypath);
     };
   }
 
@@ -337,11 +337,11 @@
     };
 
     _InstanceRecord.prototype.collectMixins = function(mixins) {
-      var key, mixin_info, _ref, _results;
-      _ref = this.initialized_mixins;
+      var key, mixin_info, _ref1, _results;
+      _ref1 = this.initialized_mixins;
       _results = [];
-      for (key in _ref) {
-        mixin_info = _ref[key];
+      for (key in _ref1) {
+        mixin_info = _ref1[key];
         _results.push(mixins.push(key));
       }
       return _results;
@@ -358,7 +358,7 @@
     };
 
     _InstanceRecord.prototype.destroyMixin = function(mixin_name) {
-      var key, mixin_existed, value, _ref;
+      var key, mixin_existed, value, _ref1;
       if (mixin_name) {
         if (!this.initialized_mixins.hasOwnProperty(mixin_name)) {
           return false;
@@ -366,9 +366,9 @@
         return this._destroyMixinInfo(mixin_name);
       } else {
         mixin_existed = false;
-        _ref = this.initialized_mixins;
-        for (key in _ref) {
-          value = _ref[key];
+        _ref1 = this.initialized_mixins;
+        for (key in _ref1) {
+          value = _ref1[key];
           mixin_existed = true;
           this._destroyMixinInfo(key);
         }
@@ -405,15 +405,15 @@
     }
 
     _ClassRecord.prototype.mixIntoClass = function(mix_target, mixin_info) {
-      var key, value, _ref;
+      var key, value, _ref1;
       if (this.mixins.hasOwnProperty(mixin_info.mixin_name)) {
         return;
       }
       this.mixins[mixin_info.mixin_name] = mixin_info;
       if (!mixin_info.force) {
-        _ref = mixin_info.mixin_object;
-        for (key in _ref) {
-          value = _ref[key];
+        _ref1 = mixin_info.mixin_object;
+        for (key in _ref1) {
+          value = _ref1[key];
           if (key in mix_target) {
             throw new Error("Mixin: property '" + key + "' clashes with existing property on '" + (_.classOf(mix_target)));
           }
@@ -493,10 +493,10 @@
     };
 
     _ClassRecord.prototype._getInstanceRecord = function(mix_target) {
-      var instance_record, _i, _len, _ref;
-      _ref = this.instance_records;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        instance_record = _ref[_i];
+      var instance_record, _i, _len, _ref1;
+      _ref1 = this.instance_records;
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        instance_record = _ref1[_i];
         if (instance_record.mix_target === mix_target) {
           return instance_record;
         }
@@ -575,20 +575,20 @@
     };
 
     _Manager.mixout = function(mix_target, mixin_name_or_names) {
-      var class_record, parameter, _doMixout, _i, _j, _len, _len1, _ref, _ref1,
+      var class_record, parameter, _doMixout, _i, _j, _len, _len1, _ref1, _ref2,
         _this = this;
       if (Mixin.DEBUG) {
         Mixin.Core._Validate.instance(mix_target, 'Mixin.mixout', 'mix_target');
       }
       _doMixout = function(mix_target, mixin_name) {
-        var class_record, _i, _len, _ref;
+        var class_record, _i, _len, _ref1;
         if (Mixin.DEBUG) {
           Mixin.Core._Validate.string(mixin_name, 'Mixin.mixout', 'mixin_name');
         }
         if (mix_target.constructor._mixin_class_records) {
-          _ref = mix_target.constructor._mixin_class_records;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            class_record = _ref[_i];
+          _ref1 = mix_target.constructor._mixin_class_records;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            class_record = _ref1[_i];
             if (class_record.destroyInstance(mix_target, mixin_name)) {
               return mix_target;
             }
@@ -597,16 +597,16 @@
         return mix_target;
       };
       if (arguments.length > 1) {
-        _ref = Array.prototype.slice.call(arguments, 1);
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          parameter = _ref[_i];
+        _ref1 = Array.prototype.slice.call(arguments, 1);
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          parameter = _ref1[_i];
           _doMixout(mix_target, parameter);
         }
       } else {
         if (mix_target.constructor._mixin_class_records) {
-          _ref1 = mix_target.constructor._mixin_class_records;
-          for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-            class_record = _ref1[_j];
+          _ref2 = mix_target.constructor._mixin_class_records;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            class_record = _ref2[_j];
             if (class_record.destroyInstance(mix_target)) {
               return mix_target;
             }
@@ -644,15 +644,15 @@
     };
 
     _Manager.mixins = function(mix_target) {
-      var class_record, mixins, _i, _len, _ref;
+      var class_record, mixins, _i, _len, _ref1;
       if (Mixin.DEBUG) {
         Mixin.Core._Validate.instance(mix_target, mixins, 'Mixin.mixins', 'mix_target');
       }
       mixins = [];
       if (mix_target.constructor._mixin_class_records) {
-        _ref = mix_target.constructor._mixin_class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = mix_target.constructor._mixin_class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           class_record.collectMixinsForInstance(mixins, mix_target);
         }
       }
@@ -660,14 +660,14 @@
     };
 
     _Manager._getClassRecords = function(mix_target) {
-      var class_record, class_records, constructor, _i, _len, _ref;
+      var class_record, class_records, constructor, _i, _len, _ref1;
       class_records = [];
       constructor = mix_target.constructor;
       while (constructor) {
         if (constructor._mixin_class_records) {
-          _ref = constructor._mixin_class_records;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            class_record = _ref[_i];
+          _ref1 = constructor._mixin_class_records;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            class_record = _ref1[_i];
             if (mix_target instanceof class_record.constructor) {
               class_records.push(class_record);
             }
@@ -799,7 +799,7 @@
 
   /*
     mixin-js-core_statistics.js
-    (c) 2011 Kevin Malakoff.
+    (c) 2011, 2012 Kevin Malakoff.
     Mixin.Core.Statistics is freely distributable under the MIT license.
     See the following for full license details:
       https://github.com/kmalakoff/mixin/blob/master/LICENSE
@@ -848,12 +848,12 @@
     };
 
     Statistics.prototype.byInstance_getMixins = function() {
-      var class_record, _i, _len, _ref;
+      var class_record, _i, _len, _ref1;
       if (!this.by_instance_get_mixins) {
         this.by_instance_get_mixins = [];
-        _ref = this.class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = this.class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           this.classRecordGetMixinsByInstance(class_record, this.by_instance_get_mixins);
         }
       }
@@ -861,12 +861,12 @@
     };
 
     Statistics.prototype.byInstance_withData = function() {
-      var class_record, _i, _len, _ref;
+      var class_record, _i, _len, _ref1;
       if (!this.by_instance_with_data) {
         this.by_instance_with_data = [];
-        _ref = this.class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = this.class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           this.classRecordGetInstancesWithData(class_record, this.by_instance_with_data);
         }
       }
@@ -874,12 +874,12 @@
     };
 
     Statistics.prototype.byMixin_getInstances = function() {
-      var class_record, _i, _len, _ref;
+      var class_record, _i, _len, _ref1;
       if (!this.by_mixin_get_instances) {
         this.by_mixin_get_instances = {};
-        _ref = this.class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = this.class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           this.classRecordGetInstancesByMixin(class_record, this.by_mixin_get_instances);
         }
       }
@@ -887,12 +887,12 @@
     };
 
     Statistics.prototype.byMixin_getConstructors = function() {
-      var class_record, _i, _len, _ref;
+      var class_record, _i, _len, _ref1;
       if (!this.by_mixin_get_constructors) {
         this.by_mixin_get_constructors = {};
-        _ref = this.class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = this.class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           this.classRecordGetMixins(class_record, this.by_mixin_get_constructors);
         }
       }
@@ -900,12 +900,12 @@
     };
 
     Statistics.prototype.byConstructor_getInstances = function() {
-      var class_record, _i, _len, _ref;
+      var class_record, _i, _len, _ref1;
       if (!this.by_constructor_get_instances) {
         this.by_constructor_get_instances = {};
-        _ref = this.class_records;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          class_record = _ref[_i];
+        _ref1 = this.class_records;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          class_record = _ref1[_i];
           this.classRecordGroupInstances(class_record, this.by_constructor_get_instances);
         }
       }
@@ -913,31 +913,31 @@
     };
 
     Statistics.prototype.classRecordGetInstancesWithData = function(class_record, instances) {
-      var instance_record, _i, _len, _ref, _results;
-      _ref = class_record.instance_records;
+      var instance_record, _i, _len, _ref1, _results;
+      _ref1 = class_record.instance_records;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        instance_record = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        instance_record = _ref1[_i];
         _results.push(instance_record.mix_target && instance_record.mix_target._mixin_data ? instances.push(instance_record.mix_target) : void 0);
       }
       return _results;
     };
 
     Statistics.prototype.classRecordGetInstancesByMixin = function(class_record, mixins) {
-      var instance_record, key, mixin_info, _i, _len, _ref, _results;
+      var instance_record, key, mixin_info, _i, _len, _ref1, _results;
       if (!class_record.instance_records.length) {
         return;
       }
-      _ref = class_record.instance_records;
+      _ref1 = class_record.instance_records;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        instance_record = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        instance_record = _ref1[_i];
         _results.push((function() {
-          var _ref1, _results1;
-          _ref1 = instance_record.initialized_mixins;
+          var _ref2, _results1;
+          _ref2 = instance_record.initialized_mixins;
           _results1 = [];
-          for (key in _ref1) {
-            mixin_info = _ref1[key];
+          for (key in _ref2) {
+            mixin_info = _ref2[key];
             _results1.push((!mixins.hasOwnProperty(key) ? mixins[key] = [] : void 0, mixins[key].push(instance_record.mix_target)));
           }
           return _results1;
@@ -947,15 +947,15 @@
     };
 
     Statistics.prototype.classRecordGetMixinsByInstance = function(class_record, instances) {
-      var instance_record, key, mixin_info, mixins, _i, _len, _ref, _ref1, _results;
-      _ref = class_record.instance_records;
+      var instance_record, key, mixin_info, mixins, _i, _len, _ref1, _ref2, _results;
+      _ref1 = class_record.instance_records;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        instance_record = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        instance_record = _ref1[_i];
         mixins = [];
-        _ref1 = instance_record.initialized_mixins;
-        for (key in _ref1) {
-          mixin_info = _ref1[key];
+        _ref2 = instance_record.initialized_mixins;
+        for (key in _ref2) {
+          mixin_info = _ref2[key];
           mixins.push(key);
         }
         _results.push(instances.push({
@@ -967,28 +967,28 @@
     };
 
     Statistics.prototype.classRecordGroupInstances = function(class_record, constructors) {
-      var instance_record, _i, _len, _ref, _results;
+      var instance_record, _i, _len, _ref1, _results;
       if (!class_record.instance_records.length) {
         return;
       }
       if (!constructors.hasOwnProperty(class_record.constructor.name)) {
         constructors[class_record.constructor] = [];
       }
-      _ref = class_record.instance_records;
+      _ref1 = class_record.instance_records;
       _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        instance_record = _ref[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        instance_record = _ref1[_i];
         _results.push(constructors[class_record.constructor].push(instance_record.mix_target));
       }
       return _results;
     };
 
     Statistics.prototype.classRecordGetMixins = function(class_record, mixins, only_with_instances) {
-      var key, mixin_info, _ref, _results;
-      _ref = class_record.mixins;
+      var key, mixin_info, _ref1, _results;
+      _ref1 = class_record.mixins;
       _results = [];
-      for (key in _ref) {
-        mixin_info = _ref[key];
+      for (key in _ref1) {
+        mixin_info = _ref1[key];
         _results.push((!mixins.hasOwnProperty(key) ? mixins[key] = [] : void 0, mixins[key].push(class_record.constructor)));
       }
       return _results;
