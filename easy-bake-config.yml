@@ -40,4 +40,4 @@ tests:
 postinstall:
   copy_latest_underscore_for_subscriptions:
     command: 'cp'
-    args: ['underscore', 'test/mixin-subscriptions/vendor/underscore-latest.js']
+    args: ['underscore', 'vendor/underscore-latest.js']
