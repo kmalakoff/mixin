@@ -14,13 +14,13 @@ library:
     - src/lib/**.*coffee
 
 library_individual_mixins:
-  output: lib
+  output: ../../lib
   compress: true
   directories:
     - src/lib
 
 tests:
-  output: ./build
+  output: build
   directories:
     - test/core
     - test/integration-auto-unmix
@@ -34,6 +34,8 @@ tests:
     test:
       command: phantomjs
       runner: phantomjs-qunit-runner.js
+      files:
+        - '**/*.html'
     build:
       no_files_ok: ['test/packaging']
 
