@@ -17,7 +17,7 @@
 
 
 (function() {
-  var Mixin, _, _ref, _ref1, _ref2, _ref3,
+  var Mixin, _, _ref,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -1014,7 +1014,11 @@
 
   Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js-core') : window.Mixin;
 
-  _ = !window._ && (typeof require !== 'undefined') ? (_ref1 = require('underscore')) != null ? _ref1._ : void 0 : window._;
+  _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+
+  if (_ && !_.VERSION) {
+    _ = _._;
+  }
 
   if (!_) {
     _ = Mixin._;
@@ -1022,7 +1026,7 @@
 
   Mixin.AutoMemory || (Mixin.AutoMemory = {});
 
-  Mixin.AutoMemory.root = this;
+  Mixin.AutoMemory.root = typeof window === 'undefined' ? global : window;
 
   Mixin.AutoMemory.WRAPPER = Mixin.AutoMemory.root['$'] ? $ : '$';
 
@@ -1033,7 +1037,7 @@
     }
 
     Property.prototype.setArgs = function() {
-      var key_or_array, _i, _len, _ref2, _results;
+      var key_or_array, _i, _len, _ref1, _results;
       if (!arguments.length) {
         throw new Error("Mixin.AutoMemory: missing key");
       }
@@ -1042,10 +1046,10 @@
         return this;
       }
       if (_.isArray(this.args[0])) {
-        _ref2 = this.args;
+        _ref1 = this.args;
         _results = [];
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          key_or_array = _ref2[_i];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          key_or_array = _ref1[_i];
           _results.push(this._validateEntry(key_or_array));
         }
         return _results;
@@ -1055,12 +1059,12 @@
     };
 
     Property.prototype.destroy = function() {
-      var key_or_array, _i, _len, _ref2, _results;
+      var key_or_array, _i, _len, _ref1, _results;
       if (_.isArray(this.args[0])) {
-        _ref2 = this.args;
+        _ref1 = this.args;
         _results = [];
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          key_or_array = _ref2[_i];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          key_or_array = _ref1[_i];
           _results.push(this._destroyEntry(key_or_array));
         }
         return _results;
@@ -1082,7 +1086,7 @@
     };
 
     Property.prototype._destroyEntry = function(entry) {
-      var fn_ref, key, keypath_owner, property, value, _i, _len, _ref2;
+      var fn_ref, key, keypath_owner, property, value, _i, _len, _ref1;
       key = entry[0];
       fn_ref = entry.length > 1 ? entry[1] : void 0;
       if (!fn_ref) {
@@ -1103,9 +1107,9 @@
         if (_.isFunction(value[fn_ref])) {
           value[fn_ref].apply(value, entry.length > 2 ? entry.slice(2) : []);
         } else {
-          _ref2 = entry.slice(1);
-          for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-            property = _ref2[_i];
+          _ref1 = entry.slice(1);
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            property = _ref1[_i];
             this._destroyEntry([property]);
           }
         }
@@ -1120,7 +1124,7 @@
   Mixin.AutoMemory.WrappedProperty = (function() {
 
     function WrappedProperty(owner, key, fn_ref, wrapper) {
-      var _i, _len, _ref2;
+      var _i, _len, _ref1;
       this.owner = owner;
       this.key = key;
       this.fn_ref = fn_ref;
@@ -1139,9 +1143,9 @@
         throw new Error("Mixin.AutoMemory: missing key");
       }
       if (_.isArray(this.key)) {
-        _ref2 = this.key;
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          key = _ref2[_i];
+        _ref1 = this.key;
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          key = _ref1[_i];
           if (!_.keypathExists(this.owner, key)) {
             throw new Error("Mixin.AutoMemory: property '" + key + "' doesn't exist on '" + (_.classOf(this.owner)) + "'");
           }
@@ -1160,12 +1164,12 @@
     }
 
     WrappedProperty.prototype.destroy = function() {
-      var key, _i, _len, _ref2, _results;
+      var key, _i, _len, _ref1, _results;
       if (_.isArray(this.key)) {
-        _ref2 = this.key;
+        _ref1 = this.key;
         _results = [];
-        for (_i = 0, _len = _ref2.length; _i < _len; _i++) {
-          key = _ref2[_i];
+        for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+          key = _ref1[_i];
           _results.push(this._destroyKey(key));
         }
         return _results;
@@ -1406,7 +1410,11 @@
 
   Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js-core') : window.Mixin;
 
-  _ = !window._ && (typeof require !== 'undefined') ? (_ref2 = require('underscore')) != null ? _ref2._ : void 0 : window._;
+  _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+
+  if (_ && !_.VERSION) {
+    _ = _._;
+  }
 
   if (!_) {
     _ = Mixin._;
@@ -1499,23 +1507,23 @@
     };
 
     _Subscription.prototype.subscribers = function(subscribers) {
-      var subscription_link, _i, _len, _ref3, _results;
-      _ref3 = this.subscription_links;
+      var subscription_link, _i, _len, _ref1, _results;
+      _ref1 = this.subscription_links;
       _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        subscription_link = _ref3[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        subscription_link = _ref1[_i];
         _results.push(subscribers.push(subscription_link.subscriber));
       }
       return _results;
     };
 
     _Subscription.prototype.notifySubscribers = function() {
-      var args, subscription_link, _i, _len, _ref3, _results;
+      var args, subscription_link, _i, _len, _ref1, _results;
       args = Array.prototype.slice.call(arguments);
-      _ref3 = this.subscription_links;
+      _ref1 = this.subscription_links;
       _results = [];
-      for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-        subscription_link = _ref3[_i];
+      for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+        subscription_link = _ref1[_i];
         _results.push(subscription_link.notification_callback.apply(subscription_link.subscriber, args));
       }
       return _results;
@@ -1619,33 +1627,33 @@
         return this;
       },
       subscriptions: function() {
-        var instance_data, key, subscriptions, value, _ref3;
+        var instance_data, key, subscriptions, value, _ref1;
         instance_data = Mixin.instanceData(this, 'Observable');
         subscriptions = [];
-        _ref3 = instance_data.subscriptions;
-        for (key in _ref3) {
-          value = _ref3[key];
+        _ref1 = instance_data.subscriptions;
+        for (key in _ref1) {
+          value = _ref1[key];
           subscriptions.push(key);
         }
         return subscriptions;
       },
       subscribers: function(subscription_name) {
-        var instance_data, key, subscribers, subscription, _ref3, _ref4;
+        var instance_data, key, subscribers, subscription, _ref1, _ref2;
         subscribers = [];
         instance_data = Mixin.instanceData(this, 'Observable');
         if (subscription_name === void 0) {
-          _ref3 = instance_data.subscriptions;
-          for (key in _ref3) {
-            subscription = _ref3[key];
+          _ref1 = instance_data.subscriptions;
+          for (key in _ref1) {
+            subscription = _ref1[key];
             subscription.subscribers(subscribers);
           }
         } else {
           if (!instance_data.subscriptions.hasOwnProperty(subscription_name)) {
             throw new Error("Mixin.Observable.subscribers: subscriber '" + (_classOf(this)) + "' does not recognize '" + subscription_name + "'");
           }
-          _ref4 = instance_data.subscriptions;
-          for (key in _ref4) {
-            subscription = _ref4[key];
+          _ref2 = instance_data.subscriptions;
+          for (key in _ref2) {
+            subscription = _ref2[key];
             if (subscription.subscription_name === subscription_name) {
               subscription.subscribers(subscribers);
             }
@@ -1742,7 +1750,7 @@
         return this;
       },
       removeSubscribers: function(subscription_name, test_fn) {
-        var instance_data, key, subscription, _ref3;
+        var instance_data, key, subscription, _ref1;
         instance_data = Mixin.instanceData(this, 'Observable');
         if (Mixin.DEBUG) {
           if (subscription_name !== void 0) {
@@ -1760,9 +1768,9 @@
           }
           subscription.removeSubscribers(test_fn);
         } else {
-          _ref3 = instance_data.subscriptions;
-          for (key in _ref3) {
-            subscription = _ref3[key];
+          _ref1 = instance_data.subscriptions;
+          for (key in _ref1) {
+            subscription = _ref1[key];
             subscription.removeSubscribers(test_fn);
           }
         }
@@ -1799,13 +1807,13 @@
     },
     mixin_object: {
       observables: function(subscription_name) {
-        var instance_data, obserables, subscription_link, _i, _j, _len, _len1, _ref3, _ref4;
+        var instance_data, obserables, subscription_link, _i, _j, _len, _len1, _ref1, _ref2;
         instance_data = Mixin.instanceData(this, 'Subscriber');
         obserables = [];
         if (subscription_name === void 0) {
-          _ref3 = instance_data.subscription_backlinks;
-          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-            subscription_link = _ref3[_i];
+          _ref1 = instance_data.subscription_backlinks;
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            subscription_link = _ref1[_i];
             if (subscription_link.subscription && (subscription_link.subscription.subscription_name === subscription_name)) {
               obserables.push(subscription_link.subscription.observable);
             }
@@ -1814,9 +1822,9 @@
           if (Mixin.DEBUG) {
             Mixin.Core._Validate.string(subscription_name, 'Mixin.Subscriptions.observables', 'subscription_name');
           }
-          _ref4 = instance_data.subscription_backlinks;
-          for (_j = 0, _len1 = _ref4.length; _j < _len1; _j++) {
-            subscription_link = _ref4[_j];
+          _ref2 = instance_data.subscription_backlinks;
+          for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
+            subscription_link = _ref2[_j];
             if (subscription_link.subscription) {
               obserables.push(subscription_link.subscription.observable);
             }
@@ -1858,7 +1866,11 @@
 
   Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js-core') : window.Mixin;
 
-  _ = !window._ && (typeof require !== 'undefined') ? (_ref3 = require('underscore')) != null ? _ref3._ : void 0 : window._;
+  _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+
+  if (_ && !_.VERSION) {
+    _ = _._;
+  }
 
   if (!_) {
     _ = Mixin._;
@@ -1906,23 +1918,23 @@
         return timeout_name in instance_data.timeouts;
       },
       timeoutCount: function() {
-        var count, instance_data, key, timeout, _ref4;
+        var count, instance_data, key, timeout, _ref1;
         instance_data = Mixin.instanceData(this, 'Timeouts');
         count = 0;
-        _ref4 = instance_data.timeouts;
-        for (key in _ref4) {
-          timeout = _ref4[key];
+        _ref1 = instance_data.timeouts;
+        for (key in _ref1) {
+          timeout = _ref1[key];
           count++;
         }
         return count;
       },
       timeouts: function() {
-        var instance_data, key, result, timeout, _ref4;
+        var instance_data, key, result, timeout, _ref1;
         instance_data = Mixin.instanceData(this, 'Timeouts');
         result = [];
-        _ref4 = instance_data.timeouts;
-        for (key in _ref4) {
-          timeout = _ref4[key];
+        _ref1 = instance_data.timeouts;
+        for (key in _ref1) {
+          timeout = _ref1[key];
           result.push(key);
         }
         return result;
@@ -1947,11 +1959,11 @@
         return this;
       },
       killAllTimeouts: function() {
-        var callback, instance_data, timeout_name, _ref4;
+        var callback, instance_data, timeout_name, _ref1;
         instance_data = Mixin.instanceData(this, 'Timeouts');
-        _ref4 = instance_data.timeouts;
-        for (timeout_name in _ref4) {
-          callback = _ref4[timeout_name];
+        _ref1 = instance_data.timeouts;
+        for (timeout_name in _ref1) {
+          callback = _ref1[timeout_name];
           this.killTimeoutIfExists(timeout_name);
         }
         return this;

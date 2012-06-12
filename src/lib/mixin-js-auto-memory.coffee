@@ -9,10 +9,11 @@
 
 # import Mixin and UnderscoreJS (or a minimal replacement)
 Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
-_ = if not window._ and (typeof(require) != 'undefined') then require('underscore')?._ else window._
+_ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
+_ = _._ if _ and not _.VERSION # LEGACY
 _ = Mixin._ unless _
 Mixin.AutoMemory||Mixin.AutoMemory={}
-Mixin.AutoMemory.root = this
+Mixin.AutoMemory.root = if typeof(window) == 'undefined' then global else window
 Mixin.AutoMemory.WRAPPER = if (Mixin.AutoMemory.root['$']) then $ else '$'
 
 class Mixin.AutoMemory.Property

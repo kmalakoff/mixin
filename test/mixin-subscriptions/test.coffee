@@ -5,8 +5,10 @@ $(document).ready( ->
   Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   unless Mixin
     Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
+  Mixin.DEBUG = true
   require('lib/mixin-subscriptions') if not Mixin.Subscriptions and (typeof(require) != 'undefined')
-  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore')?._ else window._
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
+  _ = _._ if _ and not _.VERSION # LEGACY
   _ = Mixin._ unless _
 
   test("TEST DEPENDENCY MISSING", ->
