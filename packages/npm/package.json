@@ -1,6 +1,6 @@
 {
   "author"        : {"name": "Kevin Malakoff", "url": "https://github.com/kmalakoff"},
-  "name"          : "mixin-js_dev",
+  "name"          : "mixin-js",
   "description"   : "Mixin.js is the 'reuse more', aspect-oriented Javascript nano-framework. Stay DRY...mixin!",
   "keywords"      : ["mixin-js", "mixinjs", "mixin", "javascript", "coffeescript"],
 
@@ -11,11 +11,6 @@
     "url": "http://github.com/kmalakoff/mixin.git"
   },
 
-  "scripts": {
-    "preinstall": "npm install coffee-script; npm install easy-bake@0.1.2",
-    "postinstall": "cake postinstall",
-    "test": "cake -c -b test"
-  },
   "optionalDependencies": {
     "underscore": "latest"
   },
