@@ -13,7 +13,7 @@ _ = if not window._ and (typeof(require) != 'undefined') then require('underscor
 _ = _._ if _ and not _.VERSION # LEGACY
 _ = Mixin._ unless _
 Mixin.AutoMemory||Mixin.AutoMemory={}
-Mixin.AutoMemory.root = if typeof(window) == 'undefined' then global else window
+Mixin.AutoMemory.root = @
 Mixin.AutoMemory.WRAPPER = if (Mixin.AutoMemory.root['$']) then $ else '$'
 
 class Mixin.AutoMemory.Property

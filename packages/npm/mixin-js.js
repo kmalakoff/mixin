@@ -1026,7 +1026,7 @@
 
   Mixin.AutoMemory || (Mixin.AutoMemory = {});
 
-  Mixin.AutoMemory.root = typeof window === 'undefined' ? global : window;
+  Mixin.AutoMemory.root = this;
 
   Mixin.AutoMemory.WRAPPER = Mixin.AutoMemory.root['$'] ? $ : '$';
 
