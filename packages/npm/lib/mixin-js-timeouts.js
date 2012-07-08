@@ -15,9 +15,17 @@
 
   Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js-core') : window.Mixin;
 
-  _ = !window._ && (typeof require !== 'undefined') ? require('underscore') : window._;
+  if (typeof require !== 'undefined') {
+    try {
+      _ = require('lodash');
+    } catch (e) {
+      _ = require('underscore');
+    }
+  } else {
+    _ = this._;
+  }
 
-  if (_ && !_.VERSION) {
+  if (_ && (_.hasOwnProperty('_'))) {
     _ = _._;
   }
 

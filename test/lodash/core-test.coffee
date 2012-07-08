@@ -6,7 +6,7 @@ $(document).ready( ->
   unless Mixin
     Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
   Mixin.DEBUG = true
-  if (typeof(require) != 'undefined') then _ = require('underscore') else _ = window._
+  if (typeof(require) != 'undefined') then _ = require('lodash') else _ = window._
   _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
   _ = Mixin._ unless _
 

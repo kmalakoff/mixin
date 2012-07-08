@@ -54,6 +54,7 @@ module.exports =
       'test/mixin-subscriptions'
       'test/mixin-timeouts'
       'test/packaging'
+      'test/lodash'
     ]
     modes:
       build:
@@ -69,6 +70,9 @@ module.exports =
             'mixin-js-ref-count': 'lib/mixin-js-ref-count.js'
             'mixin-js-subscriptions': 'lib/mixin-js-subscriptions.js'
             'mixin-js-timeouts': 'lib/mixin-js-timeouts.js'
+          'test/lodash/build/bundle-lodash.js':
+            lodash: 'vendor/lodash-0.3.2.js'
+            'mixin-js': 'mixin-js.js'
         no_files_ok: 'test/packaging'
       test:
         command: 'phantomjs'
