@@ -41,17 +41,17 @@ module.exports =
       ]
 
   tests:
-    output: 'build'
-    directories: [
-      'test/core'
-      'test/integration-auto-unmix'
-      'test/mixin-auto-memory'
-      'test/mixin-flags'
-      'test/mixin-ref-count'
-      'test/mixin-subscriptions'
-      'test/mixin-timeouts'
-    ]
     _build:
+      output: 'build'
+      directories: [
+        'test/core'
+        'test/integration-auto-unmix'
+        'test/mixin-auto-memory'
+        'test/mixin-flags'
+        'test/mixin-ref-count'
+        'test/mixin-subscriptions'
+        'test/mixin-timeouts'
+      ]
       commands: [
         'mbundle test/packaging/bundle-config.coffee'
         'mbundle test/lodash/bundle-config.coffee'
