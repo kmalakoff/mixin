@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <version>0.1.4</version>
+    <authors>Kevin Malakoff</authors>
+    <owners />
+    <licenseUrl>https://github.com/kmalakoff/mixin/blob/master/LICENSE</licenseUrl>
+    <projectUrl>http://kmalakoff.github.com/mixin/</projectUrl>
+    <dependencies>
+    </dependencies>
+    <id>mixin-js</id>
+    <title>mixin-js</title>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Mixin.js is the 'reuse more', aspect-oriented Javascript nano-framework. Stay DRY...mixin!</description>
+    <summary>Mixin.js is the 'reuse more', aspect-oriented Javascript nano-framework. Stay DRY...mixin!</summary>
+    <copyright>Copyright (c) 2011-2012 Kevin Malakoff</copyright>
+    <tags>mixin-js mixinjs mixin javascript aspect coffeescript</tags>
+  </metadata>
+  <files>
+    <file src="content/Scripts/mixin-js.js" target="content/Scripts/mixin-js.js" />
+    <file src="content/Scripts/mixin-js.min.js" target="content/Scripts/mixin-js.min.js" />
+  </files>
+</package>
