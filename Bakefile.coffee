@@ -11,6 +11,7 @@ module.exports =
       commands: [
         'cp mixin-js.js packages/npm/mixin-js.js'
         'cp mixin-js.min.js packages/npm/mixin-js.min.js'
+        'cp README.md packages/npm/README.md'
         'cp mixin-js.js packages/nuget/Content/Scripts/mixin-js.js'
         'cp mixin-js.min.js packages/nuget/Content/Scripts/mixin-js.min.js'
       ]
