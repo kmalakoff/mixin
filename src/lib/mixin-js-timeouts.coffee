@@ -8,8 +8,8 @@
 ###
 
 # import Mixin and UnderscoreJS (or a minimal replacement)
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
-if (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
+if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
 _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
 _ = Mixin._ unless _
 Mixin.Timeouts||Mixin.Timeouts={}

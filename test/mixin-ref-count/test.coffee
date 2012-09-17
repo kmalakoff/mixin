@@ -1,10 +1,10 @@
-$(document).ready( ->
+$(->
   module("Mixin.RefCount")
 
   # import Mixin
   Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   unless Mixin
-    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
+    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   Mixin.DEBUG = true
   require('lib/mixin-ref-count') if not Mixin.RefCount and (typeof(require) != 'undefined')
 

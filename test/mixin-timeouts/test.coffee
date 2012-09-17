@@ -1,10 +1,10 @@
-$(document).ready( ->
+$(->
   module("Mixin.Timeouts")
 
   # import Mixin
   Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   unless Mixin
-    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
+    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   Mixin.DEBUG = true
   require('lib/mixin-timeouts') if not Mixin.Timeouts and (typeof(require) != 'undefined')
 

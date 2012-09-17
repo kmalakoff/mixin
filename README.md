@@ -11,15 +11,20 @@
 
 Mixin.js is the 'reuse more', aspect-oriented Javascript nano-framework. Stay DRY...mixin!
 
-You can get the library here:
+#Download Latest (0.1.5):
 
-* [Development version][1]
-* [Production version][2]
+Please see the [release notes](https://github.com/kmalakoff/mixin/blob/master/RELEASE_NOTES.md) for upgrade pointers.
 
-You can get the minimal library (no standard mixins included) here:
+* full [(dev)](https://raw.github.com/kmalakoff/mixin/0.1.5/mixin-js.js) [(min)](https://raw.github.com/kmalakoff/mixin/0.1.5/mixin-js.min.js)
+* core [(dev)](https://raw.github.com/kmalakoff/mixin/0.1.5/mixin-js-core.js) [(min)](https://raw.github.com/kmalakoff/mixin/0.1.5/mixin-js-core.min.js)
 
-* [Development version][3]
-* [Production version][4]
+The core library does not include any of the below mixins.
+
+###Module Loading
+
+Mixin.js is compatible with RequireJS, CommonJS, Brunch and AMD module loading. Module names:
+
+* 'mixin-js' - mixin-js.js or mixin-js-core.js.
 
 # Introducing Mixin.js
 Mixin.js brings "dynamic aspect-oriented programming" to Javascript. "Dynamic" means you can add and remove independently encapsulated functionality and data to your instances on-the-fly. "Aspect-oriented" means you can flatten your class hierarchy and add/remove functionality only where & when needed.
@@ -130,8 +135,3 @@ Building, Running and Testing the library
 ###Commands:
 
 Look at: https://github.com/kmalakoff/easy-bake
-
-[1]: https://raw.github.com/kmalakoff/mixin/0.1.4/mixin-js.js
-[2]: https://raw.github.com/kmalakoff/mixin/0.1.4/mixin-js.min.js
-[3]: https://raw.github.com/kmalakoff/mixin/0.1.4/mixin-js-core.js
-[4]: https://raw.github.com/kmalakoff/mixin/0.1.4/mixin-js-core.min.js

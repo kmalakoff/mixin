@@ -8,7 +8,7 @@
 ###
 
 # import Mixin
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
+Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
 Mixin.Flags||Mixin.Flags={}
 
 Mixin.Flags._mixin_info =

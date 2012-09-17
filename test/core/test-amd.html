@@ -1,23 +1,26 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <title>Mixin.js Test Suite - Mixin.Subscriptions (Production)</title>
+  <title>Mixin.js Test Suite (AMD)</title>
   <link rel="stylesheet" href="../vendor/qunit/qunit.css" type="text/css" media="screen" />
   <script type="text/javascript" src="../vendor/qunit/jquery.js"></script>
   <script type="text/javascript" src="../vendor/qunit/qunit.js"></script>
   <script type="text/javascript" src="../vendor/qunit/jslitmus.js"></script>
 
-  <script type="text/javascript" src="../../vendor/underscore-1.3.3.js"></script>
+  <script src="../vendor/require.js"></script>
+  <script type="text/javascript">
+    require.config({
+      paths: {
+        'mixin-js': "../../mixin-js"
+      }
+    });
+  </script>
 
-  <script type="text/javascript" src="../../mixin-js-core.min.js"></script>
-
-  <script type="text/javascript" src="../../lib/mixin-js-subscriptions.min.js"></script>
-
-  <script type="text/javascript" src="build/test.js"></script>
+  <script type="text/javascript" src="build/test-amd.js"></script>
 </head>
 <body>
   <div>
-    <h1 id="qunit-header">Mixin.js Test Suite - Mixin.Subscriptions (Production)</h1>
+    <h1 id="qunit-header">Mixin.js Test Suite (AMD)</h1>
     <h2 id="qunit-banner"></h2>
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>

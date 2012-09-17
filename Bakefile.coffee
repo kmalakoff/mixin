@@ -1,6 +1,7 @@
 module.exports =
   library:
     join: 'mixin-js.js'
+    wrapper: 'src/module-loader.js'
     compress: true
     files: [
       'src/mixin-core.coffee'
@@ -74,4 +75,4 @@ module.exports =
       ]
 
   _postinstall:
-    commands: 'cp underscore vendor/underscore-latest.js'
+    commands: 'cp -v underscore vendor/underscore.js'

@@ -1,10 +1,7 @@
 ###
-  mixin-js.js 0.1.4
-  (c) 2011, 2012 Kevin Malakoff.
-  Mixin is freely distributable under the MIT license.
-  See the following for full license details:
-    https://github.com/kmalakoff/mixin/blob/master/LICENSE
-  Dependencies: None.
+  mixin-js.js 0.1.5
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/mixin/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
 
   Note: some code from Underscore.js is embedded in this file
   to remove dependencies on the full library. Please see the following for details
@@ -16,7 +13,7 @@
 # export or create Mixin namespace
 Mixin = @Mixin = if (typeof(exports) != 'undefined') then exports else {}
 Mixin.Core||Mixin.Core={}
-Mixin.VERSION = '0.1.4'
+Mixin.VERSION = '0.1.5'
 
 #Mixin.DEBUG=true                         # define DEBUG before this file to enable rigorous checks
 
@@ -24,7 +21,7 @@ Mixin.VERSION = '0.1.4'
 # Remove dependency on underscore, but inline minimally needed
 ####################################################
 # import Underscore (or Lo-Dash with precedence)
-if (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
 _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
 _ = {} unless _
 Mixin._ = _   # publish if needed and not including the full underscore library

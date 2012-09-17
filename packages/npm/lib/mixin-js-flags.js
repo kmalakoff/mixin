@@ -13,7 +13,7 @@
 (function() {
   var Mixin;
 
-  Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js-core') : window.Mixin;
+  Mixin = !window.Mixin && (typeof require !== 'undefined') ? require('mixin-js') : window.Mixin;
 
   Mixin.Flags || (Mixin.Flags = {});
 

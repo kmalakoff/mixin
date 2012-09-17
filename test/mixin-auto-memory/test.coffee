@@ -1,13 +1,13 @@
-$(document).ready( ->
+$(->
   module("Mixin.AutoMemory")
 
   # import Mixin and Underscore
   Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   unless Mixin
-    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
+    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
   Mixin.DEBUG = true
   require('lib/mixin-auto-memory') if not Mixin.AutoMemory and (typeof(require) != 'undefined')
-  if (typeof(require) != 'undefined') then _ = require('underscore') else _ = window._
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
   _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
   _ = Mixin._ unless _
 
@@ -254,9 +254,9 @@ $(document).ready( ->
     class AutoFunctionCommon
       constructor: ->
         Mixin.in(this, 'AutoMemory')
-        this.prop1 = new SomePropertyWithSpecialFunction(); @autoFunction(this.prop1, 'specialFunction').autoFunction(this.prop1, 'specialFunction').autoFunction(this.prop1, 'specialFunction')
-        this.prop2 = new SomePropertyWithSpecialFunction(); @autoFunction(this.prop2, 'specialFunction', 'Hello', 'World!')
-        @autoFunction(this.prop2, (prop) => throw new Error("Oh no") if (prop!=this.prop2); property_function_call_count++)
+        @prop1 = new SomePropertyWithSpecialFunction(); @autoFunction(@prop1, 'specialFunction').autoFunction(@prop1, 'specialFunction').autoFunction(@prop1, 'specialFunction')
+        @prop2 = new SomePropertyWithSpecialFunction(); @autoFunction(@prop2, 'specialFunction', 'Hello', 'World!')
+        @autoFunction(@prop2, (prop) => throw new Error("Oh no") if (prop!=@prop2); property_function_call_count++)
         @autoFunction(this, 'customCleanup').autoFunction(this, 'customCleanup').autoFunction(this, 'customCleanup', 'Hi', 'Universe!')
         @autoFunction(this, (that) => throw new Error("Now this is unexpected") if (that!=this); instance_function_call_count++)
       destroy: ->

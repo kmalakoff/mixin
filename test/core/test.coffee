@@ -1,12 +1,10 @@
-$(document).ready( ->
+$(->
   module("Mixin")
 
   # import Mixin and Underscore
   Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
-  unless Mixin
-    Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js-core') else window.Mixin
   Mixin.DEBUG = true
-  if (typeof(require) != 'undefined') then _ = require('underscore') else _ = window._
+  _ = if not window._ and (typeof(require) != 'undefined') then require('underscore') else window._
   _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
   _ = Mixin._ unless _
 
