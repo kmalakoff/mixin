@@ -12,8 +12,7 @@ $(->
   _ = Mixin._ unless _
 
   test("TEST DEPENDENCY MISSING", ->
-    ok(!!Mixin); ok(!!Mixin.Subscriptions)
-    ok(!!_)
+    ok(!!Mixin); ok(!!Mixin.Subscriptions); ok(!!_)
   )
 
   test("Use case: reasonably complex scenario", ->

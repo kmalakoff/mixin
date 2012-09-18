@@ -12,8 +12,7 @@ $(->
   _ = Mixin._ unless _
 
   test("TEST DEPENDENCY MISSING", ->
-    ok(!!Mixin); ok(!!Mixin.AutoMemory)
-    ok(!!_)
+    ok(!!Mixin); ok(!!Mixin.AutoMemory); ok(!!_)
   )
 
   test("Use case: autoProperty common usage", ->
