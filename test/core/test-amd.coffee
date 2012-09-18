@@ -2,11 +2,12 @@ $(->
   module("mixin-js-amd.js")
 
   # library and dependencies
-  require(['mixin-js'], (Mixin) ->
+  require(['underscore', 'mixin-js'], (_, Mixin) ->
+    Mixin.DEBUG = true
+    _ or= window._
 
     test("TEST DEPENDENCY MISSING", ->
-      ok(!!Mixin)
-      ok(!!_)
+      ok(!!Mixin); ok(!!_)
     )
 
     test("Mixin availability and basic scenario", ->

@@ -1,20 +1,9 @@
 ###
-  mixin_subscriptions.js
-  (c) 2011, 2012 Kevin Malakoff.
-  Mixin.Subscriptions is freely distributable under the MIT license.
-  See the following for full license details:
-    https://github.com/kmalakoff/mixin/blob/master/LICENSE
-  Dependencies: Mixin.Core, Underscore.js, Underscore-Awesomer.js
+  mixin-js-subscriptions.js 0.1.5
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/mixin/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
+  Dependencies: Mixin.Core
 ###
-
-# import Mixin and UnderscoreJS (or a minimal replacement)
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
-if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
-_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
-_ = Mixin._ unless _
-_.mixin(Mixin._) unless _.keypathExists  # mixin the additional functions
-
-Mixin.Subscriptions||Mixin.Subscriptions={}
 
 ####################################################
 # Classes
@@ -22,13 +11,14 @@ Mixin.Subscriptions||Mixin.Subscriptions={}
 #     destroy -> calls  you back when link is destroyed
 #     keep_until_destroyed -> overrides the Mixin.Subscription.TYPE.EXCLUSIVE flag
 ####################################################
+Mixin.Subscriptions or= {}
 class Mixin.Subscriptions._SubscriptionLink
   constructor: (@subscription, @subscriber, @notification_callback, options) ->
     @options = _.clone(options||{})
 
     # register the back link
     subscriber_instance_data = Mixin.instanceData(@subscriber, 'Subscriber')
-    subscriber_instance_data.subscription_backlinks.push(this) # store us so they can remove us if they are destroyed
+    subscriber_instance_data.subscription_backlinks.push(@) # store us so they can remove us if they are destroyed
 
   mustKeepUntilDestroyed: -> return ((@options.keep_until_destroyed==undefined) or not @options.keep_until_destroyed)
 
@@ -38,10 +28,10 @@ class Mixin.Subscriptions._SubscriptionLink
 
     # unregister back links
     subscriber_instance_data = Mixin.instanceData(@subscriber, 'Subscriber')
-    _.remove(subscriber_instance_data.subscription_backlinks, this)
+    _.remove(subscriber_instance_data.subscription_backlinks, @)
 
     # remove from subscription - it won't exist if destroy called by the subscription destroy
-    _.remove(@subscription.subscription_links, this)
+    _.remove(@subscription.subscription_links, @)
 
     @subscription = null
     @subscriber = null
@@ -62,7 +52,7 @@ class Mixin.Subscriptions._Subscription
 
   addSubscriber: (subscriber, notification_callback, options) ->
     @removeSubscribers((test_subscription)-> return test_subscription.mustKeepUntilDestroyed()) if (@subscription_type==Mixin.Subscription.TYPE.EXCLUSIVE)
-    @subscription_links.push(new Mixin.Subscriptions._SubscriptionLink(this, subscriber, notification_callback, options))
+    @subscription_links.push(new Mixin.Subscriptions._SubscriptionLink(@, subscriber, notification_callback, options))
 
   removeSubscriber: (subscriber, notification_callback, subscription_name) ->
     subscription_link = _.find(@subscription_links, (test) -> return (subscriber==test.subscriber) and (notification_callback==test.notification_callback))
@@ -72,10 +62,12 @@ class Mixin.Subscriptions._Subscription
 
   subscribers: (subscribers) ->
     subscribers.push(subscription_link.subscriber) for subscription_link in @subscription_links
+    return
 
   notifySubscribers: ->
     args = Array.prototype.slice.call(arguments)
     subscription_link.notification_callback.apply(subscription_link.subscriber, args) for subscription_link in @subscription_links
+    return
 
   removeSubscribers: (test_fn) ->
     if (test_fn)
@@ -87,54 +79,58 @@ class Mixin.Subscriptions._Subscription
       removed_subscription_links = @subscription_links
       @subscription_links = []
       subscription_link.destroy() for subscription_link in removed_subscription_links
+    return
 
   destroy: ->
     subscription_links = @subscription_links; @subscription_links = []
     link.destroy() for link in subscription_links
+    return
 
 Mixin.Subscriptions.Observable||Mixin.Subscriptions.Observable={}
 Mixin.Subscriptions.Observable._mixin_info =
   mixin_name: 'Observable'
 
   initialize: ->
-    Mixin.instanceData(this, 'Observable', {subscriptions: {}, is_destroyed: false})
-    (@publishSubscription.apply(this, if _.isArray(arg) then arg else [arg])) for arg in arguments
+    Mixin.instanceData(@, 'Observable', {subscriptions: {}, is_destroyed: false})
+    (@publishSubscription.apply(@, if _.isArray(arg) then arg else [arg])) for arg in arguments
+    return
 
   destroy: ->
-    instance_data = Mixin.instanceData(this, 'Observable')
+    instance_data = Mixin.instanceData(@, 'Observable')
     throw new Error("Mixin.Observable.destroy: already destroyed") if instance_data.is_destroyed
     instance_data.is_destroyed = true
     subscriptions = instance_data.subscriptions; instance_data.subscriptions = []
     subscription.destroy() for subscription in subscriptions # clear all of the subscriptions to me
+    return
 
   mixin_object: {
     hasSubscription: (subscription_name) ->
       if Mixin.DEBUG
         Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.hasSubscription', 'subscription_name')
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       return (instance_data.subscriptions.hasOwnProperty(subscription_name))
 
     publishSubscription: (subscription_name, subscription_type) ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       subscription_type = Mixin.Subscription.TYPE.MULTIPLE if (subscription_type == undefined)
       if Mixin.DEBUG
         Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name')
         Mixin.Core._Validate.noKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.publishSubscription', 'subscription_name')
-      instance_data.subscriptions[subscription_name] = new Mixin.Subscriptions._Subscription(this, subscription_type)
-      return this
+      instance_data.subscriptions[subscription_name] = new Mixin.Subscriptions._Subscription(@, subscription_type)
+      return @
 
     subscriptions: ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       subscriptions = []; subscriptions.push(key) for key, value of instance_data.subscriptions
       return subscriptions
 
     subscribers: (subscription_name) ->
       subscribers = []
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       if subscription_name==undefined
         subscription.subscribers(subscribers) for key, subscription of instance_data.subscriptions
       else
-        throw new Error("Mixin.Observable.subscribers: subscriber '#{_classOf(this)}' does not recognize '#{subscription_name}'") if not instance_data.subscriptions.hasOwnProperty(subscription_name)
+        throw new Error("Mixin.Observable.subscribers: subscriber '#{_classOf(@)}' does not recognize '#{subscription_name}'") if not instance_data.subscriptions.hasOwnProperty(subscription_name)
         (subscription.subscribers(subscribers) if (subscription.subscription_name==subscription_name)) for key, subscription of instance_data.subscriptions
       return _.uniq(subscribers)
 
@@ -142,7 +138,7 @@ Mixin.Subscriptions.Observable._mixin_info =
     #   subscriber, subscription1, subscription2
     #   subscriber, [subscription1, param1, etc], subscription2
     addSubscriber: (subscriber, subscription_parameters) ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
 
       _doSubscribe = (subscription_name, notification_callback, options) ->
         options||options={}
@@ -163,24 +159,24 @@ Mixin.Subscriptions.Observable._mixin_info =
         check_arg = args[1]
         # the next parameter after the first subscription is not a subscription
         if not ((_.isString(check_arg) and @hasSubscription(check_arg)) or (_.isArray(check_arg) and (check_arg.length>=1) and _.isString(check_arg[0]) and @hasSubscription(check_arg[0])))
-          _doSubscribe.apply(this, Array.prototype.slice.call(arguments,1))
-          return this
+          _doSubscribe.apply(@, Array.prototype.slice.call(arguments,1))
+          return @
 
-      (if _.isArray(parameter) then _doSubscribe.apply(this, parameter) else _doSubscribe.apply(parameter)) for parameter in args
-      return this
+      (if _.isArray(parameter) then _doSubscribe.apply(@, parameter) else _doSubscribe.apply(parameter)) for parameter in args
+      return @
 
     notifySubscribers: (subscription_name) ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       return if instance_data.is_destroyed
       if Mixin.DEBUG
         Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.notifySubscribers', 'subscription_name')
         Mixin.Core._Validate.hasKey(instance_data.subscriptions, subscription_name, 'Mixin.Observable.notifySubscribers')
       subscription = instance_data.subscriptions[subscription_name]; return if not subscription
       subscription.notifySubscribers.apply(subscription, Array.prototype.slice.call(arguments,1))
-      return this
+      return @
 
     removeSubscriber: (subscriber, subscription_name, notification_callback) ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
 
       _doUnsubscribe = (subscription_name, notification_callback) ->
         if Mixin.DEBUG
@@ -199,14 +195,14 @@ Mixin.Subscriptions.Observable._mixin_info =
         check_arg = args[1]
         # the next parameter after the first subscription is not a subscription
         if not ((_.isString(check_arg) and @hasSubscription(check_arg)) or (_.isArray(check_arg) and (check_arg.length>=1) and _.isString(check_arg[0]) and @hasSubscription(check_arg[0])))
-          _doUnsubscribe.apply(this, Array.prototype.slice.call(arguments,1))
-          return this
+          _doUnsubscribe.apply(@, Array.prototype.slice.call(arguments,1))
+          return @
 
-      (if _.isArray(parameter) then _doUnsubscribe.apply(this, parameter) else _doUnsubscribe.apply(parameter)) for parameter in args
-      return this
+      (if _.isArray(parameter) then _doUnsubscribe.apply(@, parameter) else _doUnsubscribe.apply(parameter)) for parameter in args
+      return @
 
     removeSubscribers: (subscription_name, test_fn) ->
-      instance_data = Mixin.instanceData(this, 'Observable')
+      instance_data = Mixin.instanceData(@, 'Observable')
       if Mixin.DEBUG
         if (subscription_name!=undefined)
           Mixin.Core._Validate.string(subscription_name, 'Mixin.Observable.removeSubscribers', 'subscription_name')
@@ -219,7 +215,7 @@ Mixin.Subscriptions.Observable._mixin_info =
       else
         subscription.removeSubscribers(test_fn) for key, subscription of instance_data.subscriptions
 
-      return this
+      return @
   }
 
 ####################################################
@@ -232,18 +228,19 @@ Mixin.Subscriptions.Subscriber._mixin_info =
   mixin_name: 'Subscriber'
 
   initialize: ->
-    Mixin.instanceData(this, 'Subscriber', {subscription_backlinks: [], is_destroyed: false})
+    Mixin.instanceData(@, 'Subscriber', {subscription_backlinks: [], is_destroyed: false})
 
   destroy: ->
-    instance_data = Mixin.instanceData(this, 'Subscriber')
+    instance_data = Mixin.instanceData(@, 'Subscriber')
     throw new Error("Mixin.Subscriber.destroy: already destroyed") if instance_data.is_destroyed
     instance_data.is_destroyed = true
     backlinks = instance_data.subscription_backlinks; instance_data.subscription_backlinks = []
     backlink.destroy() for backlink in backlinks # clear all of my subscriptions to others
+    return
 
   mixin_object: {
     observables: (subscription_name) ->
-      instance_data = Mixin.instanceData(this, 'Subscriber')
+      instance_data = Mixin.instanceData(@, 'Subscriber')
       obserables = []
 
       if (subscription_name==undefined)
@@ -264,8 +261,8 @@ Mixin.Subscriptions.ObservableSubscriber||Mixin.Subscriptions.ObservableSubscrib
 Mixin.Subscriptions.ObservableSubscriber._mixin_info =
   mixin_name: 'ObservableSubscriber'
   mixin_object: {}
-  initialize: -> Mixin.in(this, 'Subscriber', ['Observable'].concat(Array.prototype.slice.call(arguments)))
-  destroy: -> Mixin.out(this, 'Subscriber', 'Observable')
+  initialize: -> Mixin.in(@, 'Subscriber', ['Observable'].concat(Array.prototype.slice.call(arguments)))
+  destroy: -> Mixin.out(@, 'Subscriber', 'Observable')
 
 ####################################################
 # Make mixins available

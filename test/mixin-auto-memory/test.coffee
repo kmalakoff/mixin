@@ -332,8 +332,9 @@ $(->
 
       destroy: ->
         Mixin.out(this, 'AutoMemory')
-      instance = new Chaining()
-      instance.destroy()
-      ok(!instance.prop1 and !instance.prop2 and !instance.el and (call_count==1), "chaining cleared everything")
+
+    instance = new Chaining()
+    instance.destroy()
+    ok(!instance.prop1 and !instance.prop2 and !instance.el and (call_count==1), "chaining cleared everything")
   )
 )

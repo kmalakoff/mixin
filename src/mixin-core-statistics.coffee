@@ -39,18 +39,23 @@ class Mixin.Core.Statistics
 
   classRecordGetInstancesWithData: (class_record, instances) ->
     ((instances.push(instance_record.mix_target) if (instance_record.mix_target and instance_record.mix_target._mixin_data)) for instance_record in class_record.instance_records)
+    return
   classRecordGetInstancesByMixin: (class_record, mixins) ->
     return if not class_record.instance_records.length
     (((mixins[key]=[] if not mixins.hasOwnProperty(key)); mixins[key].push(instance_record.mix_target)) for key, mixin_info of instance_record.initialized_mixins) for instance_record in class_record.instance_records
+    return
   classRecordGetMixinsByInstance: (class_record, instances) ->
     for instance_record in class_record.instance_records
       mixins = []; mixins.push(key) for key, mixin_info of instance_record.initialized_mixins
       instances.push({instance: instance_record.mix_target, mixins: mixins})
+    return
   classRecordGroupInstances: (class_record, constructors) ->
     return if not class_record.instance_records.length
     constructors[class_record.constructor] = [] if not constructors.hasOwnProperty(class_record.constructor.name)
     constructors[class_record.constructor].push(instance_record.mix_target) for instance_record in class_record.instance_records
+    return
   classRecordGetMixins: (class_record, mixins, only_with_instances) ->
     (mixins[key]=[] if not mixins.hasOwnProperty(key); mixins[key].push(class_record.constructor)) for key, mixin_info of class_record.mixins
+    return
 
 Mixin._statistics = new Mixin.Core.Statistics() if this.Mixin.STATISTICS

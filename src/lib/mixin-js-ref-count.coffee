@@ -1,16 +1,11 @@
 ###
-  mixin_ref_count.js
-  (c) 2011, 2012 Kevin Malakoff.
-  Mixin.RefCount is freely distributable under the MIT license.
-  See the following for full license details:
-    https://github.com/kmalakoff/mixin/blob/master/LICENSE
+  mixin-js-ref-count.js 0.1.5
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/mixin/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
   Dependencies: Mixin.Core
 ###
 
-# import Mixin
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
-Mixin.RefCount||Mixin.RefCount={}
-
+Mixin.RefCount or= {}
 Mixin.RefCount._mixin_info =
   mixin_name: 'RefCount'
 

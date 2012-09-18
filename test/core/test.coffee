@@ -9,8 +9,7 @@ $(->
   _ = Mixin._ unless _
 
   test("TEST DEPENDENCY MISSING", ->
-    ok(!!Mixin)
-    ok(!!_)
+    ok(!!Mixin); ok(!!_)
   )
 
   test("Mixin availability and basic scenario", ->

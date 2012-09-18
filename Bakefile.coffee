@@ -19,6 +19,7 @@ module.exports =
 
   library_core:
     join: 'mixin-js-core.js'
+    wrapper: 'src/module-loader.js'
     compress: true
     files: [
       'src/mixin-core.coffee'
@@ -32,15 +33,63 @@ module.exports =
         'cp mixin-js-core.min.js packages/nuget/Content/Scripts/mixin-js-core.min.js'
       ]
 
-  library_individual_mixins:
-    output: '../../lib'
+  mixin_js_auto_memory:
+    join: 'mixin-js-auto-memory.js'
+    wrapper: 'src/lib/module-loader-auto-memory.js'
+    output: 'lib'
     compress: true
-    directories: 'src/lib'
-    _build:
-      commands: [
-        'cp -r lib packages/npm/lib'
-        'cp -r lib packages/nuget/Content/Scripts/lib'
-      ]
+    files: [
+      'src/lib/component-imports.coffee'
+      'src/lib/mixin-js-auto-memory.coffee'
+    ]
+
+  mixin_js_flags:
+    join: 'mixin-js-flags.js'
+    wrapper: 'src/lib/module-loader-flags.js'
+    output: 'lib'
+    compress: true
+    files: [
+      'src/lib/component-imports.coffee'
+      'src/lib/mixin-js-flags.coffee'
+    ]
+
+  mixin_js_ref_count:
+    join: 'mixin-js-ref-count.js'
+    wrapper: 'src/lib/module-loader-ref-count.js'
+    output: 'lib'
+    compress: true
+    files: [
+      'src/lib/component-imports.coffee'
+      'src/lib/mixin-js-ref-count.coffee'
+    ]
+
+  mixin_js_subscriptions:
+    join: 'mixin-js-subscriptions.js'
+    wrapper: 'src/lib/module-loader-subscriptions.js'
+    output: 'lib'
+    compress: true
+    files: [
+      'src/lib/component-imports.coffee'
+      'src/lib/mixin-js-subscriptions.coffee'
+    ]
+
+  mixin_js_timeouts:
+    join: 'mixin-js-timeouts.js'
+    wrapper: 'src/lib/module-loader-timeouts.js'
+    output: 'lib'
+    compress: true
+    files: [
+      'src/lib/component-imports.coffee'
+      'src/lib/mixin-js-timeouts.coffee'
+    ]
+
+  lib:
+    commands: [
+
+      # publish to npm and NuGet
+      'cp -r lib packages/npm/lib'
+      'cp -r lib packages/nuget/Content/Scripts/lib'
+    ]
 
   tests:
     _build:
@@ -75,4 +124,7 @@ module.exports =
       ]
 
   _postinstall:
-    commands: 'cp -v underscore vendor/underscore.js'
+    commands: [
+      'cp -v underscore vendor/underscore.js'
+      'cp -v lodash vendor/lodash.js'
+    ]

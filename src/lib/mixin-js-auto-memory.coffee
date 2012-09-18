@@ -1,21 +1,12 @@
 ###
-  mixin_auto_memory.js
-  (c) 2011, 2012 Kevin Malakoff.
-  Mixin.AutoMemory is freely distributable under the MIT license.
-  See the following for full license details:
-    https://github.com/kmalakoff/mixin/blob/master/LICENSE
-  Dependencies: Mixin.Core, Underscore.js, Underscore-Awesomer.js
+  mixin-js-auto-memory.js 0.1.5
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/mixin/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
+  Dependencies: Mixin.Core
 ###
 
-# import Mixin and UnderscoreJS (or a minimal replacement)
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
-if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
-_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
-_ = Mixin._ unless _
-Mixin.AutoMemory||Mixin.AutoMemory={}
-Mixin.AutoMemory.root = @
-Mixin.AutoMemory.WRAPPER = if (Mixin.AutoMemory.root['$']) then $ else '$'
-
+root = @
+Mixin.AutoMemory or= {}
 class Mixin.AutoMemory.Property
   constructor: (@owner) ->
   # accepts:
@@ -33,6 +24,7 @@ class Mixin.AutoMemory.Property
     # key or fn_or_fn_name args
     else
       @_validateEntry(@args)
+    return
 
   destroy: ->
     # [key1, key2, etc] or [[key1, fn_or_fn_name1 args1], key2, etc]
@@ -41,6 +33,7 @@ class Mixin.AutoMemory.Property
     # key or fn_or_fn_name args
     else
       @_destroyEntry(@args)
+    return
 
   _validateEntry: (entry) ->
     key = entry[0]; fn_ref = if (entry.length>1) then entry[1] else undefined
@@ -83,13 +76,13 @@ class Mixin.AutoMemory.WrappedProperty
 
   destroy: ->
     if _.isArray(@key) then (@_destroyKey(key) for key in @key) else @_destroyKey(@key)
+    return
 
   _destroyKey: (key) ->
     (_.keypath(@owner, key, null); return) if not @fn_ref
     value = _.keypath(@owner, key)
     return if not value
-    wrapper = if _.isString(@wrapper) then Mixin.AutoMemory.root[@wrapper] else @wrapper
-    wrapped_value =  wrapper(value)
+    wrapped_value =  root.$(value)
     if (_.isFunction(@fn_ref))
       @fn_ref.apply(@owner,[wrapped_value].concat(if @args then @args.slice() else []))
     else
@@ -115,6 +108,7 @@ Mixin.AutoMemory._mixin_info =
     # call the auto clean ups
     callbacks = Mixin.instanceData(this, 'AutoMemory'); Mixin.instanceData(this, 'AutoMemory', [])
     callback.destroy() for callback in callbacks
+    return
 
   mixin_object: {
     autoProperty: (key, fn_ref) ->
@@ -122,7 +116,7 @@ Mixin.AutoMemory._mixin_info =
       Mixin.instanceData(this, 'AutoMemory').push(auto_property)
       return this
     autoWrappedProperty: (key, fn_ref, wrapper) ->
-      wrapper=Mixin.AutoMemory.WRAPPER if (wrapper==undefined)
+      wrapper or= root.$
       Mixin.instanceData(this, 'AutoMemory').push(new Mixin.AutoMemory.WrappedProperty(this, key, fn_ref, wrapper))
       return this
     autoFunction: (object, fn_ref) ->

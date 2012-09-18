@@ -1,19 +1,11 @@
 ###
-  mixin_timeouts.js
-  (c) 2011, 2012 Kevin Malakoff.
-  Mixin.Timeouts is freely distributable under the MIT license.
-  See the following for full license details:
-    https://github.com/kmalakoff/mixin/blob/master/LICENSE
+  mixin-js-timeouts.js 0.1.5
+  (c) 2011, 2012 Kevin Malakoff - http://kmalakoff.github.com/mixin/
+  License: MIT (http://www.opensource.org/licenses/mit-license.php)
   Dependencies: Mixin.Core
 ###
 
-# import Mixin and UnderscoreJS (or a minimal replacement)
-Mixin = if not window.Mixin and (typeof(require) != 'undefined') then require('mixin-js') else window.Mixin
-if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
-_ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
-_ = Mixin._ unless _
-Mixin.Timeouts||Mixin.Timeouts={}
-
+Mixin.Timeouts or= {}
 Mixin.Timeouts._mixin_info =
   mixin_name: 'Timeouts'
 

@@ -21,7 +21,9 @@ Mixin.VERSION = '0.1.5'
 # Remove dependency on underscore, but inline minimally needed
 ####################################################
 # import Underscore (or Lo-Dash with precedence)
-if not @_ and (typeof(require) != 'undefined') then (try _ = require('lodash') catch e then _ = require('underscore')) else _ = @_
+_ = @_
+if not _ and (typeof(require) isnt 'undefined')
+  try _ = require('lodash') catch e then (try _ = require('underscore') catch e then {})
 _ = _._ if _ and (_.hasOwnProperty('_')) # LEGACY
 _ = {} unless _
 Mixin._ = _   # publish if needed and not including the full underscore library
@@ -74,6 +76,7 @@ class Mixin.Core._Validate
     throw new Error("#{mixin_and_function}: #{parameter_name} missing") if array == undefined
     throw new Error("#{mixin_and_function}: #{parameter_name} invalid") if not _.isArray(array)
     (throw new Error("#{mixin_and_function}: #{parameter_name} invalid") if _.isArray(item) and (not item.length or not _.isString(item[0])) or not _.isString(item)) for item in string_or_array
+    return
   @callback: (callback, mixin_and_function, parameter_name) ->
     throw new Error("#{mixin_and_function}: #{parameter_name} missing") if callback == undefined
     throw new Error("#{mixin_and_function}: #{parameter_name} invalid") if not _.isFunction(callback)
@@ -109,7 +112,9 @@ class Mixin.Core._InstanceRecord
 
     return true
 
-  collectMixins: (mixins) -> mixins.push(key) for key, mixin_info of @initialized_mixins
+  collectMixins: (mixins) ->
+    mixins.push(key) for key, mixin_info of @initialized_mixins
+    return
 
   initializeMixin: (mixin_info, args) ->
     # initialize
