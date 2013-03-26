@@ -126,5 +126,5 @@ module.exports =
   _postinstall:
     commands: [
       'cp -v underscore vendor/underscore.js'
-      'cp -v lodash vendor/lodash.js'
+      'cp -v lodash vendor/optional/lodash.js'
     ]
