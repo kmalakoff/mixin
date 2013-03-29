@@ -2,12 +2,15 @@
 <html>
 <head>
   <title>Mixin.js (Production) Test Suite - Integration AutoUnmix</title>
-  <link rel="stylesheet" href="../../vendor/test/qunit/qunit-1.11.0.css" type="text/css" media="screen" />
-  <script type="text/javascript" src="../../vendor/test/jquery-1.9.1.js"></script>
-  <script type="text/javascript" src="../../vendor/test/qunit/qunit-1.11.0.js"></script>
 
   <script type="text/javascript" src="../../mixin-js.min.js"></script>
   <script type="text/javascript">Mixin.DEBUG=false;</script>
+
+  <!-- TESTS -->
+  <link rel="stylesheet" href="../../vendor/test/qunit/qunit-1.11.0.css" type="text/css" media="screen" />
+  <script type="text/javascript" src="../../vendor/test/jquery-1.9.1.js"></script>
+  <script type="text/javascript" src="../../vendor/test/qunit/qunit-1.11.0.js"></script>
+  <script type="text/javascript" src="../../vendor/test/qunit/qunit_test_runner.js"></script>
 
   <script type="text/javascript" src="build/test.js"></script>
 </head>
@@ -18,6 +21,5 @@
     <h2 id="qunit-userAgent"></h2>
     <ol id="qunit-tests"></ol>
   </div>
-    <script type="text/javascript">QUnit.done(function(details) {if (!details.total) { $('#qunit-banner').removeClass('qunit-pass').addClass('qunit-fail'); throw 'Warning: no tests run'}})</script>
 </body>
 </html>
