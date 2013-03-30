@@ -9,4 +9,4 @@ try
   # library and dependencies
   require ['underscore', 'mixin-js-core', 'mixin-js-auto-memory', 'qunit_test_runner'], (_, mx, _mx, runner) ->
     window._ = window.Mixin = null # force each test to require dependencies synchronously
-    require ['./build/test'], -> runner.start()
+    runner.start(); require ['./build/test'], ->
