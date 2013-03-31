@@ -1,0 +1,13 @@
+{
+  "name": "mixin-js",
+  "version": "0.1.5",
+  "main": "mixin-js.js",
+  "ignore": [
+    "**/.*",
+    "components",
+    "node_modules",
+    "packages",
+    "test",
+    "vendor"
+  ]
+}
