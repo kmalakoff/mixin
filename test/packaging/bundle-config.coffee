@@ -1,9 +1,9 @@
 module.exports =
   'test/packaging/build/bundle-bundled.js':
-    underscore: 'vendor/underscore-1.4.4.js'
+    underscore: 'vendor/underscore-1.5.2.js'
     'mixin-js': 'mixin-js.js'
   'test/packaging/build/bundle-unbundled.js':
-    underscore: 'vendor/underscore-1.4.4.js'
+    underscore: 'vendor/underscore-1.5.2.js'
     'mixin-js': 'mixin-js-core.js'
     'mixin-js-auto-memory': 'lib/mixin-js-auto-memory.js'
     'mixin-js-flags': 'lib/mixin-js-flags.js'

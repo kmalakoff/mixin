@@ -1,7 +1,7 @@
 try
   require.config({
     paths:
-      'underscore': "../../vendor/underscore-1.4.4",
+      'underscore': "../../vendor/underscore-1.5.2",
       'mixin-js': "../../mixin-js"
   })
 

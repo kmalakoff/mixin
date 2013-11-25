@@ -12,7 +12,7 @@
   },
 
   "optionalDependencies": {
-    "underscore": ">=1.4.4"
+    "underscore": "1.5.x"
   },
 
   "main"          : "mixin-js.js",
